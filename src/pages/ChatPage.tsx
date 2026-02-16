@@ -2,15 +2,20 @@ import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Bell,
+  ChevronLeft,
   ChevronDown,
-  CircleDot,
+  Compass,
+  Gift,
+  LogOut,
+  Pencil,
+  PenSquare,
+  Folder,
   Home,
+  Image,
   MessageCircle,
   Phone,
   Search,
-  Settings,
-  Users,
-  UsersRound,
+  Sparkles,
   Video,
   X,
 } from "lucide-react";
@@ -31,6 +36,8 @@ import { currentUser, getUserById, mediaGallery } from "@/data/mockData";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Progress } from "@/components/ui/progress";
 
 const ChatPage = () => {
   const navigate = useNavigate();
@@ -166,64 +173,133 @@ const ChatPage = () => {
   return (
     <div className="min-h-screen w-full bg-muted/30 p-4">
       <div className="mx-auto flex w-full max-w-[1400px] gap-4">
-        <div className="flex h-[calc(100vh-2rem)] w-[72px] shrink-0 flex-col items-center rounded-2xl bg-background py-4 shadow-sm">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-11 w-11 rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700"
-            onClick={() => setSection("chats")}
-          >
-            <MessageCircle className="h-5 w-5" />
-          </Button>
+        <div className="flex h-[calc(100vh-2rem)] w-[72px] shrink-0 flex-col items-center rounded-2xl bg-muted/30 py-4 shadow-sm">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-12 w-12 rounded-full bg-emerald-600 text-white hover:bg-emerald-700"
+              >
+                <PenSquare className="h-5 w-5" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" side="right" sideOffset={12} className="w-72 rounded-2xl p-3">
+              <button
+                className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                onClick={() => {
+                  navigate("/");
+                }}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Go back to dashboard
+              </button>
+              <button
+                className="mt-1 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                onClick={() => toast({ title: "Rename file" })}
+              >
+                <Pencil className="h-4 w-4" />
+                Rename file
+              </button>
 
-          <div className="mt-6 flex flex-1 flex-col items-center gap-2">
+              <Separator className="my-2" />
+
+              <div className="px-1">
+                <div className="text-sm font-semibold text-foreground">testing2</div>
+                <div className="text-xs text-muted-foreground">testing2@gmail.com</div>
+              </div>
+
+              <div className="mt-3 rounded-xl border bg-background p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-[11px] text-muted-foreground">Credits</div>
+                    <div className="text-sm font-semibold text-foreground">20 left</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[11px] text-muted-foreground">Renews in</div>
+                    <div className="text-sm font-semibold text-foreground">6h 24m</div>
+                  </div>
+                </div>
+                <div className="mt-2">
+                  <Progress value={40} className="h-2" />
+                </div>
+                <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+                  <span>5 of 25 used today</span>
+                  <span className="text-emerald-700">+25 tomorrow</span>
+                </div>
+              </div>
+
+              <button
+                className="mt-2 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                onClick={() => toast({ title: "Win free credits" })}
+              >
+                <Gift className="h-4 w-4" />
+                Win free credits
+              </button>
+              <button
+                className="mt-1 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                onClick={() => toast({ title: "Theme Style" })}
+              >
+                <Sparkles className="h-4 w-4" />
+                Theme Style
+              </button>
+
+              <Separator className="my-2" />
+
+              <button
+                className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4" />
+                Log out
+              </button>
+            </PopoverContent>
+          </Popover>
+
+          <div className="mt-8 flex flex-1 flex-col items-center gap-3">
             <Button
-              variant={section === "stories" ? "secondary" : "ghost"}
+              variant="ghost"
               size="icon"
-              className="h-11 w-11 rounded-2xl"
+              className="h-11 w-11 rounded-2xl text-foreground"
               onClick={() => setSection("stories")}
             >
               <Home className="h-5 w-5" />
             </Button>
             <Button
-              variant={section === "chats" ? "secondary" : "ghost"}
+              variant="ghost"
               size="icon"
-              className="h-11 w-11 rounded-2xl"
+              className={
+                section === "chats"
+                  ? "h-11 w-11 rounded-2xl border border-emerald-600 bg-emerald-50 text-foreground hover:bg-emerald-50"
+                  : "h-11 w-11 rounded-2xl text-foreground"
+              }
               onClick={() => setSection("chats")}
             >
               <MessageCircle className="h-5 w-5" />
             </Button>
             <Button
-              variant={section === "contacts" ? "secondary" : "ghost"}
+              variant="ghost"
               size="icon"
-              className="h-11 w-11 rounded-2xl"
+              className="h-11 w-11 rounded-2xl text-foreground"
               onClick={() => setSection("contacts")}
             >
-              <Users className="h-5 w-5" />
+              <Compass className="h-5 w-5" />
             </Button>
             <Button
-              variant={section === "groups" ? "secondary" : "ghost"}
+              variant="ghost"
               size="icon"
-              className="h-11 w-11 rounded-2xl"
+              className="h-11 w-11 rounded-2xl text-foreground"
               onClick={() => setSection("groups")}
             >
-              <UsersRound className="h-5 w-5" />
+              <Folder className="h-5 w-5" />
             </Button>
             <Button
-              variant={section === "stories" ? "secondary" : "ghost"}
+              variant="ghost"
               size="icon"
-              className="h-11 w-11 rounded-2xl"
+              className="h-11 w-11 rounded-2xl text-foreground"
               onClick={() => setSection("stories")}
             >
-              <CircleDot className="h-5 w-5" />
-            </Button>
-            <Button
-              variant={section === "settings" ? "secondary" : "ghost"}
-              size="icon"
-              className="h-11 w-11 rounded-2xl"
-              onClick={() => setSection("settings")}
-            >
-              <Settings className="h-5 w-5" />
+              <Image className="h-5 w-5" />
             </Button>
           </div>
 
