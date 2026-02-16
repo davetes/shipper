@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { z } from "zod";
-import { prisma } from "../lib/prisma";
-import type { AuthedRequest } from "../middleware/auth";
-import { requireAuth } from "../middleware/auth";
+import { prisma } from "../lib/prisma.js";
+import type { AuthedRequest } from "../middleware/auth.js";
+import { requireAuth } from "../middleware/auth.js";
 
 export const chatsRouter = Router();
 

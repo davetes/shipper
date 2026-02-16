@@ -3,11 +3,11 @@ import cors from "cors";
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import { authRouter } from "./routes/auth";
-import { usersRouter } from "./routes/users";
-import { chatsRouter } from "./routes/chats";
-import { prisma } from "./lib/prisma";
-import { verifyAccessToken } from "./lib/jwt";
+import { authRouter } from "./routes/auth.js";
+import { usersRouter } from "./routes/users.js";
+import { chatsRouter } from "./routes/chats.js";
+import { prisma } from "./lib/prisma.js";
+import { verifyAccessToken } from "./lib/jwt.js";
 
 const app = express();
 app.use(express.json());

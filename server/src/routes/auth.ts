@@ -2,8 +2,8 @@ import { Router } from "express";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { OAuth2Client } from "google-auth-library";
-import { prisma } from "../lib/prisma";
-import { signAccessToken } from "../lib/jwt";
+import { prisma } from "../lib/prisma.js";
+import { signAccessToken } from "../lib/jwt.js";
 
 export const authRouter = Router();
 
