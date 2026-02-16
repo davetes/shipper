@@ -4,15 +4,17 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Chat, getUserById } from "@/data/mockData";
+import type { Chat, User } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 
 interface ConversationViewProps {
   chat: Chat;
   onSendMessage: (chatId: string, text: string) => void;
+  getUserById: (id: string) => User | undefined;
+  currentUserId: string;
 }
 
-const ConversationView = ({ chat, onSendMessage }: ConversationViewProps) => {
+const ConversationView = ({ chat, onSendMessage, getUserById, currentUserId }: ConversationViewProps) => {
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -79,7 +81,7 @@ const ConversationView = ({ chat, onSendMessage }: ConversationViewProps) => {
           <ScrollArea className="h-full">
             <div className="space-y-3 max-w-3xl mx-auto">
           {chat.messages.map((msg) => {
-            const isMine = msg.senderId === "me";
+            const isMine = msg.senderId === currentUserId;
             return (
               <div key={msg.id} className={cn("flex", isMine ? "justify-end" : "justify-start")}>
                 <div

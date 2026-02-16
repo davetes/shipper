@@ -24,13 +24,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/components/ui/use-toast";
-import { Chat, currentUser, getUserById, users } from "@/data/mockData";
+import { Chat, User } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 
 interface ChatListProps {
   activeChatId: string | null;
   onChatSelect: (chatId: string) => void;
   chats: Chat[];
+  users: User[];
+  currentUserId: string;
+  getUserById: (id: string) => User | undefined;
   onNewMessage: (userId: string) => void;
   onDeleteChat: (chatId: string) => void;
   onClearChat: (chatId: string) => void;
@@ -44,6 +47,9 @@ const ChatList = ({
   activeChatId,
   onChatSelect,
   chats,
+  users,
+  currentUserId,
+  getUserById,
   onNewMessage,
   onDeleteChat,
   onClearChat,
@@ -81,7 +87,7 @@ const ChatList = ({
                 <CommandList className="max-h-80">
                   <CommandEmpty>No results found.</CommandEmpty>
                   {users
-                    .filter((u) => u.id !== currentUser.id)
+                    .filter((u) => u.id !== currentUserId)
                     .map((u) => (
                       <CommandItem
                         key={u.id}

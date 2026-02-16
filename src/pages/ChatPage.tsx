@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Bell,
@@ -27,29 +27,34 @@ import GroupConversation from "@/components/chat/GroupConversation";
 import StoriesView from "@/components/chat/StoriesView";
 import SettingsView from "@/components/chat/SettingsView";
 import EmptyChat from "@/components/chat/EmptyChat";
-import { chats as initialChats, groups as initialGroups, Chat, Group, Message } from "@/data/mockData";
+import { groups as initialGroups, Chat, Group, Message, User } from "@/data/mockData";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { currentUser, getUserById, mediaGallery } from "@/data/mockData";
+import { mediaGallery } from "@/data/mockData";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
 import { clearToken } from "@/lib/auth";
+import { apiFetch } from "@/lib/api";
+import { connectSocket, disconnectSocket } from "@/lib/socket";
 
 const ChatPage = () => {
   const navigate = useNavigate();
   const [section, setSection] = useState<"chats" | "contacts" | "groups" | "stories" | "settings">("chats");
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
-  const [chatData, setChatData] = useState<Chat[]>(initialChats);
+  const [chatData, setChatData] = useState<Chat[]>([]);
   const [groupData, setGroupData] = useState<Group[]>(initialGroups);
   const [archivedChatIds, setArchivedChatIds] = useState<Set<string>>(() => new Set());
   const [contactInfoOpen, setContactInfoOpen] = useState(false);
   const [contactInfoUserId, setContactInfoUserId] = useState<string | null>(null);
+  const [me, setMe] = useState<{ id: string; name: string; email: string; avatarUrl?: string | null } | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [presenceByUserId, setPresenceByUserId] = useState<Record<string, { userId: string; name: string; avatarUrl?: string | null }>>({});
 
   const handleLogout = () => {
     clearToken();
@@ -61,23 +66,192 @@ const ChatPage = () => {
     setContactInfoOpen(true);
   };
 
+  const currentUser: User = useMemo(() => {
+    return {
+      id: me?.id ?? "me",
+      name: me?.name ?? "Me",
+      avatar: me?.avatarUrl ?? "https://i.pravatar.cc/150?img=68",
+      status: "online",
+      email: me?.email,
+    };
+  }, [me]);
+
+  const getUserById = useCallback(
+    (id: string) => {
+      if (id === currentUser.id) return currentUser;
+      return users.find((u) => u.id === id);
+    },
+    [currentUser, users]
+  );
+
   const contactUser = contactInfoUserId ? getUserById(contactInfoUserId) : undefined;
 
-  const handleSendMessage = useCallback((chatId: string, text: string) => {
-    const newMsg: Message = {
-      id: `m-${Date.now()}`,
-      senderId: "me",
-      text,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      type: "text",
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [{ user: meRes }, { users: usersRes }] = await Promise.all([
+          apiFetch<{ user: { id: string; email: string; name: string; avatarUrl?: string | null } }>("/api/users/me"),
+          apiFetch<{ users: Array<{ id: string; email: string; name: string; avatarUrl?: string | null }> }>("/api/users"),
+        ]);
+
+        if (cancelled) return;
+        setMe(meRes);
+
+        const mappedUsers: User[] = usersRes.map((u) => ({
+          id: u.id,
+          name: u.name,
+          avatar: u.avatarUrl ?? `https://i.pravatar.cc/150?u=${encodeURIComponent(u.id)}`,
+          status: presenceByUserId[u.id] ? "online" : "offline",
+          email: u.email,
+          lastSeen: presenceByUserId[u.id] ? undefined : "Offline",
+        }));
+        setUsers(mappedUsers);
+      } catch (e: any) {
+        toast({ title: "Failed to load user profile" });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
     };
-    setChatData((prev) =>
-      prev.map((c) =>
-        c.id === chatId
-          ? { ...c, messages: [...c.messages, newMsg], lastMessage: text, lastMessageTime: "Now", unreadCount: 0 }
-          : c
-      )
-    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!me) return;
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await apiFetch<{
+          chats: Array<{
+            id: string;
+            updatedAt: string;
+            members: Array<{ user: { id: string; name: string; email: string; avatarUrl?: string | null } }>;
+            messages: Array<{ id: string; text: string; createdAt: string; senderId: string }>;
+          }>;
+        }>("/api/chats");
+
+        if (cancelled) return;
+
+        const mapped: Chat[] = res.chats
+          .map((c) => {
+            const other = c.members.map((m) => m.user).find((u) => u.id !== me.id);
+            if (!other) return null;
+
+            const last = c.messages?.[0];
+            return {
+              id: c.id,
+              userId: other.id,
+              lastMessage: last?.text ?? "",
+              lastMessageTime: last ? new Date(last.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "",
+              unreadCount: 0,
+              messages: [],
+            };
+          })
+          .filter(Boolean) as Chat[];
+
+        setChatData(mapped);
+      } catch {
+        toast({ title: "Failed to load chats" });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [me]);
+
+  useEffect(() => {
+    const socket = connectSocket();
+
+    const onPresenceUpdate = (onlineMap: Record<string, { userId: string; name: string; avatarUrl?: string | null }>) => {
+      setPresenceByUserId(onlineMap);
+      setUsers((prev) =>
+        prev.map((u) => ({
+          ...u,
+          status: onlineMap[u.id] ? "online" : "offline",
+          lastSeen: onlineMap[u.id] ? undefined : u.lastSeen ?? "Offline",
+          avatar: onlineMap[u.id]?.avatarUrl ?? u.avatar,
+          name: onlineMap[u.id]?.name ?? u.name,
+        }))
+      );
+    };
+
+    const onChatMessage = ({ message }: { message: { id: string; chatId: string; text: string; createdAt: string; senderId: string } }) => {
+      setChatData((prev) =>
+        prev.map((c) => {
+          if (c.id !== message.chatId) return c;
+          const newMsg: Message = {
+            id: message.id,
+            senderId: message.senderId,
+            text: message.text,
+            timestamp: new Date(message.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            type: "text",
+          };
+          return {
+            ...c,
+            messages: [...c.messages, newMsg],
+            lastMessage: message.text,
+            lastMessageTime: newMsg.timestamp,
+          };
+        })
+      );
+    };
+
+    socket.on("presence:update", onPresenceUpdate);
+    socket.on("chat:message", onChatMessage);
+
+    return () => {
+      socket.off("presence:update", onPresenceUpdate);
+      socket.off("chat:message", onChatMessage);
+      disconnectSocket();
+    };
+  }, []);
+
+  useEffect(() => {
+    const socket = connectSocket();
+    if (!activeChatId) return;
+
+    socket.emit("chat:join", { chatId: activeChatId });
+    return () => {
+      socket.emit("chat:leave", { chatId: activeChatId });
+    };
+  }, [activeChatId]);
+
+  useEffect(() => {
+    if (!activeChatId) return;
+
+    (async () => {
+      try {
+        const res = await apiFetch<{
+          messages: Array<{ id: string; text: string; createdAt: string; senderId: string }>;
+        }>(`/api/chats/${activeChatId}/messages`);
+
+        setChatData((prev) =>
+          prev.map((c) => {
+            if (c.id !== activeChatId) return c;
+            const mapped: Message[] = res.messages.map((m) => ({
+              id: m.id,
+              senderId: m.senderId,
+              text: m.text,
+              timestamp: new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+              type: "text",
+            }));
+            return { ...c, messages: mapped };
+          })
+        );
+      } catch {
+        toast({ title: "Failed to load messages" });
+      }
+    })();
+  }, [activeChatId]);
+
+  const handleSendMessage = useCallback((chatId: string, text: string) => {
+    const socket = connectSocket();
+    socket.emit("chat:message", { chatId, text });
   }, []);
 
   const handleSendGroupMessage = useCallback((groupId: string, text: string) => {
@@ -97,23 +271,40 @@ const ChatPage = () => {
     );
   }, []);
 
-  const handleContactClick = (userId: string) => {
+  const handleContactClick = async (userId: string) => {
     const existingChat = chatData.find((c) => c.userId === userId);
     if (existingChat) {
       setSection("chats");
       setActiveChatId(existingChat.id);
-    } else {
+      return;
+    }
+
+    try {
+      const res = await apiFetch<{
+        chat: {
+          id: string;
+          members: Array<{ user: { id: string; name: string; email: string; avatarUrl?: string | null } }>;
+        };
+      }>("/api/chats/start", {
+        method: "POST",
+        body: JSON.stringify({ userId }),
+      });
+
+      const chatId = res.chat.id;
       const newChat: Chat = {
-        id: `c-${Date.now()}`,
+        id: chatId,
         userId,
         lastMessage: "",
-        lastMessageTime: "Now",
+        lastMessageTime: "",
         unreadCount: 0,
         messages: [],
       };
+
       setChatData((prev) => [newChat, ...prev]);
       setSection("chats");
-      setActiveChatId(newChat.id);
+      setActiveChatId(chatId);
+    } catch {
+      toast({ title: "Failed to start chat" });
     }
   };
 
@@ -358,6 +549,9 @@ const ChatPage = () => {
                   activeChatId={activeChatId}
                   onChatSelect={handleSelectChat}
                   chats={chatData}
+                  users={users}
+                  currentUserId={currentUser.id}
+                  getUserById={getUserById}
                   onNewMessage={handleContactClick}
                   onDeleteChat={handleDeleteChat}
                   onClearChat={handleClearChat}
@@ -367,7 +561,7 @@ const ChatPage = () => {
                   onContactInfo={handleOpenContactInfo}
                 />
               ) : section === "contacts" ? (
-                <ContactsList onContactClick={handleContactClick} />
+                <ContactsList onContactClick={handleContactClick} users={users} currentUserId={currentUser.id} />
               ) : section === "groups" ? (
                 <GroupsList activeGroupId={activeGroupId} onGroupSelect={setActiveGroupId} />
               ) : (
@@ -378,7 +572,7 @@ const ChatPage = () => {
             <div className="flex h-full flex-1 flex-col overflow-hidden rounded-2xl bg-background shadow-sm">
               {section === "chats" ? (
                 activeChat ? (
-                  <ConversationView chat={activeChat} onSendMessage={handleSendMessage} />
+                  <ConversationView chat={activeChat} onSendMessage={handleSendMessage} getUserById={getUserById} currentUserId={currentUser.id} />
                 ) : (
                   <EmptyChat />
                 )

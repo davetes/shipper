@@ -3,21 +3,25 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { users } from "@/data/mockData";
+import type { User } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 
 interface ContactsListProps {
   onContactClick: (userId: string) => void;
+  users: User[];
+  currentUserId: string;
 }
 
-const ContactsList = ({ onContactClick }: ContactsListProps) => {
+const ContactsList = ({ onContactClick, users, currentUserId }: ContactsListProps) => {
   const [search, setSearch] = useState("");
 
-  const filtered = users.filter((u) => u.name.toLowerCase().includes(search.toLowerCase()));
+  const filtered = users
+    .filter((u) => u.id !== currentUserId)
+    .filter((u) => u.name.toLowerCase().includes(search.toLowerCase()));
   const online = filtered.filter((u) => u.status === "online");
   const offline = filtered.filter((u) => u.status === "offline");
 
-  const renderUser = (user: typeof users[0]) => (
+  const renderUser = (user: User) => (
     <button
       key={user.id}
       onClick={() => onContactClick(user.id)}
