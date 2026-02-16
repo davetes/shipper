@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Paperclip, Smile, Phone, Video, MoreVertical } from "lucide-react";
+import { Send, Paperclip, Smile, Phone, Video, MoreVertical, Search } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Chat, Message, getUserById, currentUser } from "@/data/mockData";
+import { Chat, getUserById } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 
 interface ConversationViewProps {
@@ -39,7 +39,7 @@ const ConversationView = ({ chat, onSendMessage }: ConversationViewProps) => {
   return (
     <div className="flex-1 flex flex-col bg-background">
       {/* Header */}
-      <div className="h-16 border-b border-border flex items-center justify-between px-4 shrink-0">
+      <div className="h-16 flex items-center justify-between px-5 shrink-0">
         <div className="flex items-center gap-3">
           <div className="relative">
             <Avatar className="w-10 h-10">
@@ -57,16 +57,27 @@ const ConversationView = ({ chat, onSendMessage }: ConversationViewProps) => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="text-muted-foreground"><Phone className="w-4 h-4" /></Button>
-          <Button variant="ghost" size="icon" className="text-muted-foreground"><Video className="w-4 h-4" /></Button>
-          <Button variant="ghost" size="icon" className="text-muted-foreground"><MoreVertical className="w-4 h-4" /></Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl">
+            <Search className="w-4 h-4 text-muted-foreground" />
+          </Button>
+          <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl">
+            <Phone className="w-4 h-4 text-muted-foreground" />
+          </Button>
+          <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl">
+            <Video className="w-4 h-4 text-muted-foreground" />
+          </Button>
+          <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl">
+            <MoreVertical className="w-4 h-4 text-muted-foreground" />
+          </Button>
         </div>
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 px-4 py-3">
-        <div className="space-y-3 max-w-3xl mx-auto">
+      <div className="flex-1 px-5 pb-5">
+        <div className="h-full rounded-2xl bg-muted/25 p-4">
+          <ScrollArea className="h-full">
+            <div className="space-y-3 max-w-3xl mx-auto">
           {chat.messages.map((msg) => {
             const isMine = msg.senderId === "me";
             return (
@@ -102,29 +113,31 @@ const ConversationView = ({ chat, onSendMessage }: ConversationViewProps) => {
             </div>
           )}
           <div ref={bottomRef} />
+            </div>
+          </ScrollArea>
         </div>
-      </ScrollArea>
+      </div>
 
       {/* Input */}
-      <div className="border-t border-border p-3 shrink-0">
-        <div className="flex items-center gap-2 max-w-3xl mx-auto">
-          <Button variant="ghost" size="icon" className="text-muted-foreground shrink-0">
+      <div className="px-5 pb-5 shrink-0">
+        <div className="flex items-center gap-2 rounded-2xl bg-background">
+          <Button variant="ghost" size="icon" className="text-muted-foreground shrink-0 rounded-xl">
             <Paperclip className="w-5 h-5" />
           </Button>
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Type a message..."
-            className="flex-1 h-10 bg-secondary border-0 rounded-full px-4"
+            placeholder="Type any message..."
+            className="flex-1 h-11 bg-muted/30 border-0 rounded-xl px-4"
           />
-          <Button variant="ghost" size="icon" className="text-muted-foreground shrink-0">
+          <Button variant="ghost" size="icon" className="text-muted-foreground shrink-0 rounded-xl">
             <Smile className="w-5 h-5" />
           </Button>
           <Button
             onClick={handleSend}
             size="icon"
-            className="shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+            className="shrink-0 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700"
             disabled={!input.trim()}
           >
             <Send className="w-4 h-4" />

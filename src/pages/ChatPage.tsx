@@ -1,6 +1,19 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import AppSidebar, { Section } from "@/components/chat/AppSidebar";
+import {
+  Bell,
+  ChevronDown,
+  CircleDot,
+  Home,
+  MessageCircle,
+  Phone,
+  Search,
+  Settings,
+  Users,
+  UsersRound,
+  Video,
+  X,
+} from "lucide-react";
 import ChatList from "@/components/chat/ChatList";
 import ConversationView from "@/components/chat/ConversationView";
 import ContactsList from "@/components/chat/ContactsList";
@@ -10,16 +23,34 @@ import StoriesView from "@/components/chat/StoriesView";
 import SettingsView from "@/components/chat/SettingsView";
 import EmptyChat from "@/components/chat/EmptyChat";
 import { chats as initialChats, groups as initialGroups, Chat, Group, Message } from "@/data/mockData";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
+import { currentUser, getUserById, mediaGallery } from "@/data/mockData";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 
 const ChatPage = () => {
   const navigate = useNavigate();
-  const [section, setSection] = useState<Section>("chats");
+  const [section, setSection] = useState<"chats" | "contacts" | "groups" | "stories" | "settings">("chats");
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
   const [chatData, setChatData] = useState<Chat[]>(initialChats);
   const [groupData, setGroupData] = useState<Group[]>(initialGroups);
+  const [archivedChatIds, setArchivedChatIds] = useState<Set<string>>(() => new Set());
+  const [contactInfoOpen, setContactInfoOpen] = useState(false);
+  const [contactInfoUserId, setContactInfoUserId] = useState<string | null>(null);
 
   const handleLogout = () => navigate("/");
+
+  const handleOpenContactInfo = (userId: string) => {
+    setContactInfoUserId(userId);
+    setContactInfoOpen(true);
+  };
+
+  const contactUser = contactInfoUserId ? getUserById(contactInfoUserId) : undefined;
 
   const handleSendMessage = useCallback((chatId: string, text: string) => {
     const newMsg: Message = {
@@ -75,53 +106,304 @@ const ChatPage = () => {
     }
   };
 
+  const handleDeleteChat = (chatId: string) => {
+    setChatData((prev) => prev.filter((c) => c.id !== chatId));
+    setActiveChatId((prev) => (prev === chatId ? null : prev));
+    toast({ title: "Chat deleted" });
+  };
+
+  const handleClearChat = (chatId: string) => {
+    setChatData((prev) =>
+      prev.map((c) =>
+        c.id === chatId
+          ? {
+              ...c,
+              messages: [],
+              lastMessage: "",
+              lastMessageTime: "Now",
+              unreadCount: 0,
+            }
+          : c
+      )
+    );
+    toast({ title: "Chat cleared" });
+  };
+
+  const handleToggleUnread = (chatId: string) => {
+    let nextUnread = 0;
+    setChatData((prev) =>
+      prev.map((c) => {
+        if (c.id !== chatId) return c;
+        nextUnread = c.unreadCount > 0 ? 0 : 1;
+        return { ...c, unreadCount: nextUnread };
+      })
+    );
+    toast({ title: nextUnread > 0 ? "Marked as unread" : "Marked as read" });
+  };
+
+  const handleSelectChat = (chatId: string) => {
+    setActiveChatId(chatId);
+    setChatData((prev) => prev.map((c) => (c.id === chatId ? { ...c, unreadCount: 0 } : c)));
+  };
+
+  const handleToggleArchive = (chatId: string) => {
+    setArchivedChatIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(chatId)) {
+        next.delete(chatId);
+        toast({ title: "Unarchived" });
+      } else {
+        next.add(chatId);
+        toast({ title: "Archived" });
+      }
+      return next;
+    });
+  };
+
   const activeChat = chatData.find((c) => c.id === activeChatId);
   const activeGroup = groupData.find((g) => g.id === activeGroupId);
 
-  const renderContent = () => {
-    switch (section) {
-      case "chats":
-        return (
-          <>
-            <ChatList activeChatId={activeChatId} onChatSelect={setActiveChatId} />
-            {activeChat ? (
-              <ConversationView chat={activeChat} onSendMessage={handleSendMessage} />
-            ) : (
-              <EmptyChat />
-            )}
-          </>
-        );
-      case "contacts":
-        return (
-          <>
-            <ContactsList onContactClick={handleContactClick} />
-            <EmptyChat />
-          </>
-        );
-      case "groups":
-        return (
-          <>
-            <GroupsList activeGroupId={activeGroupId} onGroupSelect={setActiveGroupId} />
-            {activeGroup ? (
-              <GroupConversation group={activeGroup} onSendMessage={handleSendGroupMessage} />
-            ) : (
-              <EmptyChat />
-            )}
-          </>
-        );
-      case "stories":
-        return <StoriesView />;
-      case "settings":
-        return <SettingsView onLogout={handleLogout} />;
-      default:
-        return <EmptyChat />;
-    }
-  };
-
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      <AppSidebar activeSection={section} onSectionChange={setSection} onLogout={handleLogout} />
-      {renderContent()}
+    <div className="min-h-screen w-full bg-muted/30 p-4">
+      <div className="mx-auto flex w-full max-w-[1400px] gap-4">
+        <div className="flex h-[calc(100vh-2rem)] w-[72px] shrink-0 flex-col items-center rounded-2xl bg-background py-4 shadow-sm">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-11 w-11 rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700"
+            onClick={() => setSection("chats")}
+          >
+            <MessageCircle className="h-5 w-5" />
+          </Button>
+
+          <div className="mt-6 flex flex-1 flex-col items-center gap-2">
+            <Button
+              variant={section === "stories" ? "secondary" : "ghost"}
+              size="icon"
+              className="h-11 w-11 rounded-2xl"
+              onClick={() => setSection("stories")}
+            >
+              <Home className="h-5 w-5" />
+            </Button>
+            <Button
+              variant={section === "chats" ? "secondary" : "ghost"}
+              size="icon"
+              className="h-11 w-11 rounded-2xl"
+              onClick={() => setSection("chats")}
+            >
+              <MessageCircle className="h-5 w-5" />
+            </Button>
+            <Button
+              variant={section === "contacts" ? "secondary" : "ghost"}
+              size="icon"
+              className="h-11 w-11 rounded-2xl"
+              onClick={() => setSection("contacts")}
+            >
+              <Users className="h-5 w-5" />
+            </Button>
+            <Button
+              variant={section === "groups" ? "secondary" : "ghost"}
+              size="icon"
+              className="h-11 w-11 rounded-2xl"
+              onClick={() => setSection("groups")}
+            >
+              <UsersRound className="h-5 w-5" />
+            </Button>
+            <Button
+              variant={section === "stories" ? "secondary" : "ghost"}
+              size="icon"
+              className="h-11 w-11 rounded-2xl"
+              onClick={() => setSection("stories")}
+            >
+              <CircleDot className="h-5 w-5" />
+            </Button>
+            <Button
+              variant={section === "settings" ? "secondary" : "ghost"}
+              size="icon"
+              className="h-11 w-11 rounded-2xl"
+              onClick={() => setSection("settings")}
+            >
+              <Settings className="h-5 w-5" />
+            </Button>
+          </div>
+
+          <div className="mt-auto flex flex-col items-center gap-3">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+              <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
+            </Avatar>
+          </div>
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col gap-4">
+          <div className="flex h-14 items-center gap-3 rounded-2xl bg-background px-4 shadow-sm">
+            <div className="flex items-center gap-2">
+              <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/40" />
+              <span className="text-sm font-medium text-foreground">Message</span>
+            </div>
+
+            <div className="flex flex-1 items-center justify-center px-4">
+              <div className="relative w-full max-w-md">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input placeholder="Search" className="h-9 rounded-full bg-muted/40 pl-9" />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">⌘K</div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon" className="text-muted-foreground">
+                <Bell className="h-4 w-4" />
+              </Button>
+              <div className="h-6 w-px bg-border" />
+              <div className="flex items-center gap-2">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+                  <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
+                </Avatar>
+                <Button
+                  variant="ghost"
+                  className="h-9 gap-1 px-2 text-muted-foreground"
+                  onClick={() => setSection("settings")}
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex h-[calc(100vh-5.5rem)] w-full gap-4 overflow-hidden">
+            <div className="flex h-full w-[360px] shrink-0 flex-col overflow-hidden rounded-2xl bg-background shadow-sm">
+              {section === "chats" ? (
+                <ChatList
+                  activeChatId={activeChatId}
+                  onChatSelect={handleSelectChat}
+                  chats={chatData}
+                  onNewMessage={handleContactClick}
+                  onDeleteChat={handleDeleteChat}
+                  onClearChat={handleClearChat}
+                  onMarkUnread={handleToggleUnread}
+                  archivedChatIds={archivedChatIds}
+                  onToggleArchive={handleToggleArchive}
+                  onContactInfo={handleOpenContactInfo}
+                />
+              ) : section === "contacts" ? (
+                <ContactsList onContactClick={handleContactClick} />
+              ) : section === "groups" ? (
+                <GroupsList activeGroupId={activeGroupId} onGroupSelect={setActiveGroupId} />
+              ) : (
+                <div className="flex-1" />
+              )}
+            </div>
+
+            <div className="flex h-full flex-1 flex-col overflow-hidden rounded-2xl bg-background shadow-sm">
+              {section === "chats" ? (
+                activeChat ? (
+                  <ConversationView chat={activeChat} onSendMessage={handleSendMessage} />
+                ) : (
+                  <EmptyChat />
+                )
+              ) : section === "groups" ? (
+                activeGroup ? (
+                  <GroupConversation group={activeGroup} onSendMessage={handleSendGroupMessage} />
+                ) : (
+                  <EmptyChat />
+                )
+              ) : section === "stories" ? (
+                <StoriesView />
+              ) : section === "settings" ? (
+                <SettingsView onLogout={handleLogout} />
+              ) : (
+                <EmptyChat />
+              )}
+            </div>
+          </div>
+        </div>
+
+        <Sheet open={contactInfoOpen} onOpenChange={setContactInfoOpen}>
+          <SheetContent side="right" className="p-0 sm:max-w-md">
+            <div className="flex items-center justify-between px-6 py-4">
+              <SheetTitle className="text-base font-semibold">Contact Info</SheetTitle>
+              <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setContactInfoOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <Separator />
+
+            <div className="px-6 py-5">
+              <div className="flex flex-col items-center text-center">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage src={contactUser?.avatar} alt={contactUser?.name ?? ""} />
+                  <AvatarFallback>{contactUser?.name?.[0] ?? "?"}</AvatarFallback>
+                </Avatar>
+                <div className="mt-3 text-sm font-semibold text-foreground">{contactUser?.name ?? ""}</div>
+                <div className="mt-1 text-xs text-muted-foreground">{contactUser?.email ?? ""}</div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <Button variant="outline" className="rounded-xl">
+                  <Phone className="h-4 w-4" />
+                  Audio
+                </Button>
+                <Button variant="outline" className="rounded-xl">
+                  <Video className="h-4 w-4" />
+                  Video
+                </Button>
+              </div>
+
+              <Tabs defaultValue="media" className="mt-5">
+                <TabsList className="w-fit rounded-xl bg-muted/30">
+                  <TabsTrigger value="media" className="rounded-lg">Media</TabsTrigger>
+                  <TabsTrigger value="link" className="rounded-lg">Link</TabsTrigger>
+                  <TabsTrigger value="docs" className="rounded-lg">Docs</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="media">
+                  <div className="mt-4 space-y-4">
+                    <div>
+                      <div className="text-xs font-medium text-muted-foreground mb-2">May</div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {mediaGallery.slice(0, 7).map((src) => (
+                          <div key={src} className="aspect-square overflow-hidden rounded-xl bg-muted">
+                            <img src={src} alt="" className="h-full w-full object-cover" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs font-medium text-muted-foreground mb-2">April</div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {mediaGallery.slice(7, 16).map((src) => (
+                          <div key={src} className="aspect-square overflow-hidden rounded-xl bg-muted">
+                            <img src={src} alt="" className="h-full w-full object-cover" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs font-medium text-muted-foreground mb-2">March</div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {mediaGallery.slice(16, 24).map((src) => (
+                          <div key={src} className="aspect-square overflow-hidden rounded-xl bg-muted">
+                            <img src={src} alt="" className="h-full w-full object-cover" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="link">
+                  <div className="mt-4 text-sm text-muted-foreground">No links yet.</div>
+                </TabsContent>
+
+                <TabsContent value="docs">
+                  <div className="mt-4 text-sm text-muted-foreground">No documents yet.</div>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
     </div>
   );
 };
