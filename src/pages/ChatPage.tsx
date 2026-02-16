@@ -38,6 +38,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
+import { clearToken } from "@/lib/auth";
 
 const ChatPage = () => {
   const navigate = useNavigate();
@@ -50,7 +51,10 @@ const ChatPage = () => {
   const [contactInfoOpen, setContactInfoOpen] = useState(false);
   const [contactInfoUserId, setContactInfoUserId] = useState<string | null>(null);
 
-  const handleLogout = () => navigate("/");
+  const handleLogout = () => {
+    clearToken();
+    navigate("/");
+  };
 
   const handleOpenContactInfo = (userId: string) => {
     setContactInfoUserId(userId);
