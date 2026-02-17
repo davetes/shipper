@@ -55,6 +55,9 @@ const ChatPage = () => {
   const [me, setMe] = useState<{ id: string; name: string; email: string; avatarUrl?: string | null } | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [presenceByUserId, setPresenceByUserId] = useState<Record<string, { userId: string; name: string; avatarUrl?: string | null }>>({});
+  const [sharedLinks, setSharedLinks] = useState<string[]>([]);
+  const [sharedMedia, setSharedMedia] = useState<string[]>([]);
+  const [sharedDocs, setSharedDocs] = useState<string[]>([]);
 
   const handleLogout = () => {
     clearToken();
@@ -85,6 +88,74 @@ const ChatPage = () => {
   );
 
   const contactUser = contactInfoUserId ? getUserById(contactInfoUserId) : undefined;
+
+  const extractUrls = useCallback((text: string) => {
+    const re = /(https?:\/\/[^\s)\]}>"]+)/g;
+    return Array.from(text.matchAll(re)).map((m) => m[1]);
+  }, []);
+
+  const isImageUrl = useCallback((url: string) => {
+    try {
+      const u = new URL(url);
+      const p = u.pathname.toLowerCase();
+      return p.endsWith(".png") || p.endsWith(".jpg") || p.endsWith(".jpeg") || p.endsWith(".gif") || p.endsWith(".webp") || p.endsWith(".svg");
+    } catch {
+      return false;
+    }
+  }, []);
+
+  const isDocUrl = useCallback((url: string) => {
+    try {
+      const u = new URL(url);
+      const p = u.pathname.toLowerCase();
+      return (
+        p.endsWith(".pdf") ||
+        p.endsWith(".doc") ||
+        p.endsWith(".docx") ||
+        p.endsWith(".xls") ||
+        p.endsWith(".xlsx") ||
+        p.endsWith(".ppt") ||
+        p.endsWith(".pptx") ||
+        p.endsWith(".txt")
+      );
+    } catch {
+      return false;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!contactInfoOpen || !contactInfoUserId) return;
+    const chat = chatData.find((c) => c.userId === contactInfoUserId);
+    if (!chat) {
+      setSharedLinks([]);
+      setSharedMedia([]);
+      setSharedDocs([]);
+      return;
+    }
+
+    (async () => {
+      try {
+        const res = await apiFetch<{
+          messages: Array<{ id: string; text: string; createdAt: string; senderId: string }>;
+        }>(`/api/chats/${chat.id}/messages`);
+
+        const urls = res.messages.flatMap((m) => extractUrls(m.text ?? ""));
+        const unique = Array.from(new Set(urls));
+
+        const media = unique.filter(isImageUrl);
+        const docs = unique.filter(isDocUrl);
+        const links = unique.filter((u) => !media.includes(u) && !docs.includes(u));
+
+        setSharedLinks(links);
+        setSharedMedia(media);
+        setSharedDocs(docs);
+      } catch {
+        setSharedLinks([]);
+        setSharedMedia([]);
+        setSharedDocs([]);
+      }
+    })();
+  }, [apiFetch, chatData, contactInfoOpen, contactInfoUserId, extractUrls, isDocUrl, isImageUrl]);
 
   useEffect(() => {
     let cancelled = false;
@@ -632,46 +703,65 @@ const ChatPage = () => {
                 </TabsList>
 
                 <TabsContent value="media">
-                  <div className="mt-4 space-y-4">
-                    <div>
-                      <div className="text-xs font-medium text-muted-foreground mb-2">May</div>
-                      <div className="grid grid-cols-4 gap-2">
-                        {mediaGallery.slice(0, 7).map((src) => (
-                          <div key={src} className="aspect-square overflow-hidden rounded-xl bg-muted">
-                            <img src={src} alt="" className="h-full w-full object-cover" />
-                          </div>
-                        ))}
-                      </div>
+                  {sharedMedia.length > 0 ? (
+                    <div className="mt-4 grid grid-cols-4 gap-2">
+                      {sharedMedia.slice(0, 24).map((src) => (
+                        <a
+                          key={src}
+                          href={src}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="aspect-square overflow-hidden rounded-xl bg-muted"
+                        >
+                          <img src={src} alt="" className="h-full w-full object-cover" />
+                        </a>
+                      ))}
                     </div>
-                    <div>
-                      <div className="text-xs font-medium text-muted-foreground mb-2">April</div>
-                      <div className="grid grid-cols-4 gap-2">
-                        {mediaGallery.slice(7, 16).map((src) => (
-                          <div key={src} className="aspect-square overflow-hidden rounded-xl bg-muted">
-                            <img src={src} alt="" className="h-full w-full object-cover" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-xs font-medium text-muted-foreground mb-2">March</div>
-                      <div className="grid grid-cols-4 gap-2">
-                        {mediaGallery.slice(16, 24).map((src) => (
-                          <div key={src} className="aspect-square overflow-hidden rounded-xl bg-muted">
-                            <img src={src} alt="" className="h-full w-full object-cover" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  ) : (
+                    <div className="mt-4 text-sm text-muted-foreground">No media shared yet.</div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="link">
-                  <div className="mt-4 text-sm text-muted-foreground">No links yet.</div>
+                  {sharedLinks.length > 0 ? (
+                    <div className="mt-4 space-y-2">
+                      {sharedLinks.slice(0, 50).map((href) => (
+                        <a
+                          key={href}
+                          href={href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block truncate rounded-xl border bg-background px-3 py-2 text-sm text-foreground hover:bg-muted/30"
+                          title={href}
+                        >
+                          {href}
+                        </a>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-4 text-sm text-muted-foreground">No links shared yet.</div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="docs">
-                  <div className="mt-4 text-sm text-muted-foreground">No documents yet.</div>
+                  {sharedDocs.length > 0 ? (
+                    <div className="mt-4 space-y-2">
+                      {sharedDocs.slice(0, 50).map((href) => (
+                        <a
+                          key={href}
+                          href={href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block truncate rounded-xl border bg-background px-3 py-2 text-sm text-foreground hover:bg-muted/30"
+                          title={href}
+                        >
+                          {href}
+                        </a>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-4 text-sm text-muted-foreground">No documents shared yet.</div>
+                  )}
                 </TabsContent>
               </Tabs>
             </div>
