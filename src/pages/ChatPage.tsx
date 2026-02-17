@@ -90,8 +90,13 @@ const ChatPage = () => {
   const contactUser = contactInfoUserId ? getUserById(contactInfoUserId) : undefined;
 
   const extractUrls = useCallback((text: string) => {
-    const re = /(https?:\/\/[^\s)\]}>"]+)/g;
-    return Array.from(text.matchAll(re)).map((m) => m[1]);
+    const httpRe = /(https?:\/\/[^\s)\]}>\"]+)/gi;
+    const wwwRe = /(^|\s)(www\.[^\s)\]}>\"]+)/gi;
+
+    const httpUrls = Array.from(text.matchAll(httpRe)).map((m) => m[1]);
+    const wwwUrls = Array.from(text.matchAll(wwwRe)).map((m) => `https://${m[2]}`);
+
+    return [...httpUrls, ...wwwUrls];
   }, []);
 
   const isImageUrl = useCallback((url: string) => {
