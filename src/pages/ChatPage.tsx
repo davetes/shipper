@@ -443,90 +443,96 @@ const ChatPage = () => {
   return (
     <div className="min-h-screen w-full bg-muted/30 p-4">
       <div className="mx-auto flex h-[1024px] w-[1440px] max-w-full gap-4 rounded-[24px] overflow-hidden">
-        <div className="flex h-full w-[72px] shrink-0 flex-col items-center rounded-2xl bg-muted/30 py-4 shadow-sm">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="default"
-                size="icon"
-                className="h-12 w-12 rounded-full bg-transparent text-foreground hover:bg-muted/50 data-[state=open]:bg-muted/50"
+        <div className="flex h-full w-[76px] shrink-0 flex-col items-center justify-between rounded-2xl bg-muted/30 px-4 py-6 shadow-sm">
+          <div className="flex h-[328px] w-[44px] flex-col items-center gap-8">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="default"
+                  size="icon"
+                  className="h-[44px] w-[44px] rounded-full bg-transparent p-[11px] text-foreground hover:bg-muted/50 data-[state=open]:bg-muted/50"
+                >
+                  <img src="/icon.png" alt="New" className="h-[22px] w-[22px]" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="start"
+                side="right"
+                sideOffset={0}
+                alignOffset={56}
+                className="flex h-[428px] w-[307px] -translate-x-16 flex-col gap-1 rounded-[16px] py-1"
               >
-                <img src="/icon.png" alt="New" className="h-7 w-7" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="start" side="right" sideOffset={0} alignOffset={56} className="w-72 -translate-x-16 rounded-2xl p-3">
-              <button
-                className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
-                onClick={() => {
-                  navigate("/");
-                }}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Go back to dashboard
-              </button>
-              <button
-                className="mt-1 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
-                onClick={() => toast({ title: "Rename file" })}
-              >
-                <Pencil className="h-4 w-4" />
-                Rename file
-              </button>
+                <button
+                  className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                  onClick={() => {
+                    navigate("/");
+                  }}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Go back to dashboard
+                </button>
+                <button
+                  className="mt-1 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                  onClick={() => toast({ title: "Rename file" })}
+                >
+                  <Pencil className="h-4 w-4" />
+                  Rename file
+                </button>
 
-              <Separator className="my-2" />
+                <Separator className="my-2" />
 
-              <div className="px-1">
-                <div className="text-sm font-semibold text-foreground">testing2</div>
-                <div className="text-xs text-muted-foreground">testing2@gmail.com</div>
-              </div>
+                <div className="px-1">
+                  <div className="text-sm font-semibold text-foreground">testing2</div>
+                  <div className="text-xs text-muted-foreground">testing2@gmail.com</div>
+                </div>
 
-              <div className="mt-3 rounded-xl border bg-background p-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-[11px] text-muted-foreground">Credits</div>
-                    <div className="text-sm font-semibold text-foreground">20 left</div>
+                <div className="mt-3 rounded-xl border bg-background p-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-[11px] text-muted-foreground">Credits</div>
+                      <div className="text-sm font-semibold text-foreground">20 left</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[11px] text-muted-foreground">Renews in</div>
+                      <div className="text-sm font-semibold text-foreground">6h 24m</div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-[11px] text-muted-foreground">Renews in</div>
-                    <div className="text-sm font-semibold text-foreground">6h 24m</div>
+                  <div className="mt-2">
+                    <Progress value={40} className="h-2" />
+                  </div>
+                  <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+                    <span>5 of 25 used today</span>
+                    <span className="text-emerald-700">+25 tomorrow</span>
                   </div>
                 </div>
-                <div className="mt-2">
-                  <Progress value={40} className="h-2" />
-                </div>
-                <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
-                  <span>5 of 25 used today</span>
-                  <span className="text-emerald-700">+25 tomorrow</span>
-                </div>
-              </div>
 
-              <button
-                className="mt-2 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
-                onClick={() => toast({ title: "Win free credits" })}
-              >
-                <Gift className="h-4 w-4" />
-                Win free credits
-              </button>
-              <button
-                className="mt-1 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
-                onClick={() => toast({ title: "Theme Style" })}
-              >
-                <Sparkles className="h-4 w-4" />
-                Theme Style
-              </button>
+                <button
+                  className="mt-2 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                  onClick={() => toast({ title: "Win free credits" })}
+                >
+                  <Gift className="h-4 w-4" />
+                  Win free credits
+                </button>
+                <button
+                  className="mt-1 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                  onClick={() => toast({ title: "Theme Style" })}
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Theme Style
+                </button>
 
-              <Separator className="my-2" />
+                <Separator className="my-2" />
 
-              <button
-                className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
-                onClick={handleLogout}
-              >
-                <LogOut className="h-4 w-4" />
-                Log out
-              </button>
-            </PopoverContent>
-          </Popover>
+                <button
+                  className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Log out
+                </button>
+              </PopoverContent>
+            </Popover>
 
-          <div className="mt-8 flex flex-1 flex-col items-center gap-3">
             <Button
               variant="ghost"
               size="icon"
@@ -582,37 +588,44 @@ const ChatPage = () => {
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col gap-4">
-          <div className="flex h-14 items-center gap-3 rounded-2xl bg-background px-4 shadow-sm">
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/40" />
-              <span className="text-sm font-medium text-foreground">Message</span>
-            </div>
-
-            <div className="flex flex-1 items-center justify-center px-4">
-              <div className="relative w-full max-w-md">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input placeholder="Search" className="h-9 rounded-full bg-muted/40 pl-9" />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">⌘K</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="text-muted-foreground">
-                <Bell className="h-4 w-4" />
-              </Button>
-              <div className="h-6 w-px bg-border" />
+          <div className="flex h-[56px] w-[1340px] items-center gap-6 self-center rounded-[16px] bg-background px-6 py-3">
+            <div className="flex h-[32px] w-[1292px] items-center justify-between ">
               <div className="flex items-center gap-2">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
-                  <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
-                </Avatar>
-                <Button
-                  variant="ghost"
-                  className="h-9 gap-1 px-2 text-muted-foreground"
-                  onClick={() => setSection("settings")}
-                >
-                  <ChevronDown className="h-4 w-4" />
+                <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/40" />
+                <span className="text-sm font-medium text-foreground">Message</span>
+              </div>
+
+              <div className="flex flex-1 items-center justify-center px-4">
+                <div className="flex h-[32px] w-[300px] items-center gap-2 rounded-[10px] border border-[#E8E5DF] bg-background py-[10px] pl-[10px] pr-1">
+                  <Search className="h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search"
+                    className="h-[16px] w-[214px] border-0 bg-transparent p-0 font-normal leading-4 text-[#8796AF] shadow-none placeholder:text-[#8796AF] focus-visible:ring-0 focus-visible:ring-offset-0"
+                  />
+                  <div className="flex h-[24px] w-[40px] items-center justify-center gap-1 rounded-[6px] bg-[#F3F3EE] px-[6px] py-[5px] text-xs text-muted-foreground">
+                    ⌘+K
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon" className="text-muted-foreground">
+                  <Bell className="h-4 w-4" />
                 </Button>
+                <div className="h-6 w-px bg-border" />
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+                    <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
+                  </Avatar>
+                  <Button
+                    variant="ghost"
+                    className="h-9 gap-1 px-2 text-muted-foreground"
+                    onClick={() => setSection("settings")}
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
