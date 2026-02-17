@@ -8,7 +8,6 @@ import {
   Gift,
   LogOut,
   Pencil,
-  PenSquare,
   Folder,
   Home,
   Image,
@@ -443,19 +442,19 @@ const ChatPage = () => {
 
   return (
     <div className="min-h-screen w-full bg-muted/30 p-4">
-      <div className="mx-auto flex w-full max-w-[1400px] gap-4">
-        <div className="flex h-[calc(100vh-2rem)] w-[72px] shrink-0 flex-col items-center rounded-2xl bg-muted/30 py-4 shadow-sm">
+      <div className="mx-auto flex h-[1024px] w-[1440px] max-w-full gap-4 rounded-[24px] overflow-hidden">
+        <div className="flex h-full w-[72px] shrink-0 flex-col items-center rounded-2xl bg-muted/30 py-4 shadow-sm">
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                variant="ghost"
+                variant="default"
                 size="icon"
-                className="h-12 w-12 rounded-full bg-emerald-600 text-white hover:bg-emerald-700"
+                className="h-12 w-12 rounded-full bg-transparent text-foreground hover:bg-muted/50 data-[state=open]:bg-muted/50"
               >
-                <PenSquare className="h-5 w-5" />
+                <img src="/icon.png" alt="New" className="h-7 w-7" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" side="right" sideOffset={12} className="w-72 rounded-2xl p-3">
+            <PopoverContent align="start" side="right" sideOffset={0} alignOffset={56} className="w-72 -translate-x-16 rounded-2xl p-3">
               <button
                 className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
                 onClick={() => {
@@ -618,7 +617,7 @@ const ChatPage = () => {
             </div>
           </div>
 
-          <div className="flex h-[calc(100vh-5.5rem)] w-full gap-4 overflow-hidden">
+          <div className="flex h-full w-full gap-4 overflow-hidden">
             <div className="flex h-full w-[360px] shrink-0 flex-col overflow-hidden rounded-2xl bg-background shadow-sm">
               {section === "chats" ? (
                 <ChatList
@@ -677,7 +676,6 @@ const ChatPage = () => {
                 <X className="h-4 w-4" />
               </Button>
             </div>
-            <Separator />
 
             <div className="px-6 py-5">
               <div className="flex flex-col items-center text-center">
