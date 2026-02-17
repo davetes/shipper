@@ -26,6 +26,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/components/ui/use-toast";
 import { Chat, User } from "@/data/mockData";
 import { cn } from "@/lib/utils";
+import { formatRelativeTime } from "@/lib/time";
 
 interface ChatListProps {
   activeChatId: string | null;
@@ -170,7 +171,7 @@ const ChatList = ({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
                         <span className="font-medium text-sm text-foreground truncate">{user.name}</span>
-                        <span className="text-xs text-muted-foreground shrink-0">{chat.lastMessageTime}</span>
+                        <span className="text-xs text-muted-foreground shrink-0">{formatRelativeTime(chat.lastMessageTime)}</span>
                       </div>
                       <div className="flex items-center justify-between mt-0.5">
                         <span className="text-xs text-muted-foreground truncate">{chat.lastMessage}</span>

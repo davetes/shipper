@@ -61,15 +61,23 @@ chatsRouter.get("/:chatId/messages", requireAuth, async (req: AuthedRequest, res
   const chatId = req.params.chatId;
   const userId = req.user!.id;
 
+  const limitRaw = req.query.limit;
+  const limitParsed = typeof limitRaw === "string" ? Number(limitRaw) : undefined;
+  const limit = Number.isFinite(limitParsed)
+    ? Math.max(1, Math.min(1000, Math.floor(limitParsed!)))
+    : 200;
+
   const isMember = await prisma.chatMember.findFirst({ where: { chatId, userId } });
   if (!isMember) return res.status(403).json({ error: "Forbidden" });
 
-  const messages = await prisma.message.findMany({
+  const messagesDesc = await prisma.message.findMany({
     where: { chatId },
-    orderBy: { createdAt: "asc" },
-    take: 200,
+    orderBy: { createdAt: "desc" },
+    take: limit,
     include: { sender: { select: { id: true, name: true, avatarUrl: true } } },
   });
+
+  const messages = messagesDesc.reverse();
 
   return res.json({ messages });
 });

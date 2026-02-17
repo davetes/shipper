@@ -43,8 +43,8 @@
     --sidebar-border: 210 11% 22%;
     --sidebar-ring: 162 63% 41%;
 
-    --chat-sent: 162 63% 41%;
-    --chat-sent-foreground: 0 0% 100%;
+    --chat-sent: 92 70% 90%;
+    --chat-sent-foreground: 210 11% 15%;
     --chat-received: 210 20% 96%;
     --chat-received-foreground: 210 11% 15%;
     --online: 142 71% 45%;
@@ -87,8 +87,8 @@
     --sidebar-border: 210 11% 15%;
     --sidebar-ring: 162 63% 41%;
 
-    --chat-sent: 162 63% 41%;
-    --chat-sent-foreground: 0 0% 100%;
+    --chat-sent: 162 35% 22%;
+    --chat-sent-foreground: 210 20% 96%;
     --chat-received: 210 11% 18%;
     --chat-received-foreground: 210 20% 96%;
     --online: 142 71% 45%;

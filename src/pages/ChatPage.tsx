@@ -137,7 +137,7 @@ const ChatPage = () => {
       try {
         const res = await apiFetch<{
           messages: Array<{ id: string; text: string; createdAt: string; senderId: string }>;
-        }>(`/api/chats/${chat.id}/messages`);
+        }>(`/api/chats/${chat.id}/messages?limit=1000`);
 
         const urls = res.messages.flatMap((m) => extractUrls(m.text ?? ""));
         const unique = Array.from(new Set(urls));
@@ -217,7 +217,7 @@ const ChatPage = () => {
               id: c.id,
               userId: other.id,
               lastMessage: last?.text ?? "",
-              lastMessageTime: last ? new Date(last.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "",
+              lastMessageTime: last ? last.createdAt : "",
               unreadCount: 0,
               messages: [],
             };
@@ -259,14 +259,14 @@ const ChatPage = () => {
             id: message.id,
             senderId: message.senderId,
             text: message.text,
-            timestamp: new Date(message.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            timestamp: message.createdAt,
             type: "text",
           };
           return {
             ...c,
             messages: [...c.messages, newMsg],
             lastMessage: message.text,
-            lastMessageTime: newMsg.timestamp,
+            lastMessageTime: message.createdAt,
           };
         })
       );
@@ -308,7 +308,7 @@ const ChatPage = () => {
               id: m.id,
               senderId: m.senderId,
               text: m.text,
-              timestamp: new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+              timestamp: m.createdAt,
               type: "text",
             }));
             return { ...c, messages: mapped };
