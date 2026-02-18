@@ -7,11 +7,10 @@ import {
   Compass,
   Gift,
   LogOut,
-  Pencil,
   Phone,
   Search,
-  Sparkle,
   Settings,
+  Sparkle,
   Sparkles,
   Video,
   X,
@@ -460,28 +459,30 @@ const ChatPage = () => {
                 alignOffset={64}
                 className="flex h-[428px] w-[307px] -translate-x-[56px] flex-col gap-[4px] rounded-[16px] bg-white pb-[4px] pt-[4px] shadow-[0px_1px_13.8px_1px_#1212121A]"
               >
-                <div className="flex w-[307px] px-1">
-                  <div className="flex h-[92px] w-[299px] flex-col gap-1 rounded-[12px] p-1">
-                    <button
-                      className="flex w-[287px] items-center gap-[10px] rounded-xl py-2 text-sm hover:bg-muted/50"
-                      
-                    >
-                      <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
-                        <ChevronLeft className="h-4 w-4" />
-                      </div>
-                      Go back to dashboard
-                    </button>
-                    <button
-                      className="flex h-[40px] w-[287px] items-center gap-2 rounded-[8px] bg-[#F8F8F5] p-[6px] text-sm hover:bg-[#F8F8F5]"
-                     
-                    >
-                      <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
-                        <Pencil className="h-4 w-4" />
-                      </div>
-                      Rename file
-                    </button>
+                <button
+                  className="flex w-full items-center gap-[10px] rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                  
+                >
+                  <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
+                    <ChevronLeft className="h-4 w-4" />
                   </div>
-                </div>
+                  Go back to dashboard
+                </button>
+                <button
+                  className="flex h-[40px] w-full items-center gap-[10px] rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                 
+                >
+                  <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M2 14H14M9.18961 3.54114C9.18961 3.54114 9.18961 4.63089 10.2794 5.72064C11.3691 6.81039 12.4589 6.81039 12.4589 6.81039M4.87975 11.992L7.16823 11.6651C7.49833 11.618 7.80424 11.465 8.04003 11.2292L13.5486 5.72064C14.1505 5.11879 14.1505 4.14299 13.5486 3.54114L12.4589 2.45139C11.857 1.84954 10.8812 1.84954 10.2794 2.45139L4.77078 7.95997C4.53499 8.19576 4.38203 8.50167 4.33488 8.83177L4.00795 11.1202C3.9353 11.6288 4.3712 12.0647 4.87975 11.992Z"
+                        stroke="#28303F"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </div>
+                  Rename file
+                </button>
 
                 <div className="flex w-[307px] px-[10px]">
                   <Separator className="w-full" />
@@ -492,7 +493,7 @@ const ChatPage = () => {
                   <div className="text-xs text-muted-foreground">testing2@gmail.com</div>
                 </div>
 
-                <div className="mt-3 flex h-[100px] w-[287px] flex-col gap-2 rounded-[8px] bg-[#F8F8F5] p-2">
+                <div className="mt-3 mx-1 flex h-[100px] w-full flex-col gap-2 rounded-[8px] bg-[#F8F8F5] p-2">
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-[11px] text-muted-foreground">Credits</div>
@@ -547,7 +548,7 @@ const ChatPage = () => {
                 <Separator className="my-2" />
 
                 <button
-                  className="flex h-[48px] w-[307px] items-center gap-2 rounded-xl px-1 text-sm hover:bg-muted/50"
+                  className="flex w-full items-center gap-[10px] rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
                   onClick={handleLogout}
                 >
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

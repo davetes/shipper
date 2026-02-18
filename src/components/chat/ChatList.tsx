@@ -3,9 +3,7 @@ import {
   Archive,
   Download,
   Filter,
-  Info,
   Search,
-  Trash2,
   VolumeX,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -92,12 +90,12 @@ const ChatList = ({
             <PopoverContent
               align="end"
               side="bottom"
-              className="flex h-[440px] w-[273px] flex-col rounded-[16px] border border-[#E8E5DF] bg-white p-3 shadow-[0_0_24px_0_#0000000F]"
+              className="flex w-[273px] flex-col rounded-[16px] border border-[#E8E5DF] bg-white p-3 shadow-[0_0_24px_0_#0000000F]"
             >
               <div className="flex h-[24px] w-[249px] items-center gap-[10px] text-sm font-semibold text-foreground">New Message</div>
               <Command className="flex-1 rounded-2xl [&_[cmdk-input-wrapper]]:h-[32px] [&_[cmdk-input-wrapper]]:w-[249px] [&_[cmdk-input-wrapper]]:gap-2 [&_[cmdk-input-wrapper]]:rounded-[10px] [&_[cmdk-input-wrapper]]:border [&_[cmdk-input-wrapper]]:border-[#F3F3EE] [&_[cmdk-input-wrapper]]:px-0 [&_[cmdk-input-wrapper]]:py-0 [&_[cmdk-input-wrapper]]:pl-[10px] [&_[cmdk-input-wrapper]]:pr-1 [&_[cmdk-input-wrapper]]:mb-3 [&_[cmdk-input-wrapper]]:border-b [&_[cmdk-input-wrapper]]:border-b-0 [&_[cmdk-input-wrapper]_svg]:mr-0">
                 <CommandInput placeholder="Search name or email" className="h-[16px] py-0 text-xs leading-4" />
-                <CommandList className="max-h-80">
+                <CommandList>
                   <CommandEmpty>No results found.</CommandEmpty>
                   {users
                     .filter((u) => u.id !== currentUserId)
@@ -161,8 +159,7 @@ const ChatList = ({
                   <button
                     onClick={() => onChatSelect(chat.id)}
                     className={cn(
-                      "group w-full flex items-center gap-3 rounded-2xl px-0 py-3 hover:bg-muted/40 transition-colors text-left",
-                      activeChatId === chat.id && "bg-muted/60"
+                      "group w-full flex items-stretch gap-3 px-0 py-0 transition-colors text-left"
                     )}
                   >
                     {isUnread && (
@@ -174,28 +171,35 @@ const ChatList = ({
                       </div>
                     )}
 
-                    <div className="relative">
-                      <Avatar className="w-11 h-11">
-                        <AvatarImage src={user.avatar} alt={user.name} />
-                        <AvatarFallback>{user.name[0]}</AvatarFallback>
-                      </Avatar>
-                      {user.status === "online" && (
-                        <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-online border-2 border-background" />
+                    <div
+                      className={cn(
+                        "flex flex-1 min-w-0 items-center gap-3 rounded-2xl px-0 py-3 hover:bg-muted/40 transition-colors",
+                        activeChatId === chat.id && "bg-muted/60"
                       )}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-sm text-foreground truncate">{user.name}</span>
-                        <span className="text-xs text-muted-foreground shrink-0">{formatRelativeTime(chat.lastMessageTime)}</span>
-                      </div>
-                      <div className="flex items-center justify-between mt-0.5">
-                        <span className="text-xs text-muted-foreground truncate">{chat.lastMessage}</span>
-                        {chat.unreadCount > 0 && (
-                          <Badge className="h-5 min-w-5 flex items-center justify-center text-[10px] bg-primary text-primary-foreground border-0 shrink-0">
-                            {chat.unreadCount}
-                          </Badge>
+                    >
+                      <div className="relative">
+                        <Avatar className="w-11 h-11">
+                          <AvatarImage src={user.avatar} alt={user.name} />
+                          <AvatarFallback>{user.name[0]}</AvatarFallback>
+                        </Avatar>
+                        {user.status === "online" && (
+                          <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-online border-2 border-background" />
                         )}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-sm text-foreground truncate">{user.name}</span>
+                          <span className="text-xs text-muted-foreground shrink-0">{formatRelativeTime(chat.lastMessageTime)}</span>
+                        </div>
+                        <div className="flex items-center justify-between mt-0.5">
+                          <span className="text-xs text-muted-foreground truncate">{chat.lastMessage}</span>
+                          {chat.unreadCount > 0 && (
+                            <Badge className="h-5 min-w-5 flex items-center justify-center text-[10px] bg-primary text-primary-foreground border-0 shrink-0">
+                              {chat.unreadCount}
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -210,7 +214,7 @@ const ChatList = ({
                   </button>
                 </ContextMenuTrigger>
 
-                <ContextMenuContent className="w-56 rounded-2xl p-2">
+                <ContextMenuContent className="h-[264px] w-[200px] rounded-[16px] border border-[#E8E5DF] bg-white p-2 text-sm font-medium leading-5 tracking-[-0.006em] text-[#111625] shadow-[0_0_24px_0_#0000000F]">
                   <ContextMenuItem className="rounded-xl gap-2" onSelect={() => onMarkUnread(chat.id)}>
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -223,46 +227,88 @@ const ChatList = ({
                     </svg>
                     {isUnread ? "Mark as read" : "Mark as unread"}
                   </ContextMenuItem>
-                  <ContextMenuItem className="rounded-xl" onSelect={() => onToggleArchive(chat.id)}>
-                    <Archive className="mr-2 h-4 w-4" />
+                  <ContextMenuItem className="rounded-xl gap-2" onSelect={() => onToggleArchive(chat.id)}>
+                    <Archive className="h-4 w-4" />
                     {isArchived ? "Unarchive" : "Archive"}
                   </ContextMenuItem>
                   <ContextMenuItem
-                    className="rounded-xl"
+                    className="rounded-xl flex items-center justify-between"
                     onSelect={() => {
                       toast({ title: "Muted" });
                     }}
                   >
-                    <VolumeX className="mr-2 h-4 w-4" />
-                    Mute
+                    <div className="flex items-center gap-2">
+                      <VolumeX className="h-4 w-4" />
+                      Mute
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M6 4L10 8L6 12"
+                        stroke="#111625"
+                        strokeWidth="1.33333"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </ContextMenuItem>
                   <ContextMenuItem
-                    className="rounded-xl"
+                    className="rounded-xl gap-2"
                     onSelect={() => onContactInfo(chat.userId)}
                   >
-                    <Info className="mr-2 h-4 w-4" />
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M4.11198 12.566C4.27699 12.0168 4.61462 11.5355 5.07481 11.1933C5.535 10.8512 6.09321 10.6665 6.66665 10.6667H9.33331C9.90749 10.6665 10.4664 10.8516 10.9269 11.1945C11.3874 11.5374 11.725 12.0199 11.8893 12.57M2 8C2 8.78793 2.15519 9.56815 2.45672 10.2961C2.75825 11.0241 3.20021 11.6855 3.75736 12.2426C4.31451 12.7998 4.97595 13.2417 5.7039 13.5433C6.43185 13.8448 7.21207 14 8 14C8.78793 14 9.56815 13.8448 10.2961 13.5433C11.0241 13.2417 11.6855 12.7998 12.2426 12.2426C12.7998 11.6855 13.2417 11.0241 13.5433 10.2961C13.8448 9.56815 14 8.78793 14 8C14 7.21207 13.8448 6.43185 13.5433 5.7039C13.2417 4.97595 12.7998 4.31451 12.2426 3.75736C11.6855 3.20021 11.0241 2.75825 10.2961 2.45672C9.56815 2.15519 8.78793 2 8 2C7.21207 2 6.43185 2.15519 5.7039 2.45672C4.97595 2.75825 4.31451 3.20021 3.75736 3.75736C3.20021 4.31451 2.75825 4.97595 2.45672 5.7039C2.15519 6.43185 2 7.21207 2 8ZM6 6.66667C6 7.1971 6.21071 7.70581 6.58579 8.08088C6.96086 8.45595 7.46957 8.66667 8 8.66667C8.53043 8.66667 9.03914 8.45595 9.41421 8.08088C9.78929 7.70581 10 7.1971 10 6.66667C10 6.13623 9.78929 5.62753 9.41421 5.25245C9.03914 4.87738 8.53043 4.66667 8 4.66667C7.46957 4.66667 6.96086 4.87738 6.58579 5.25245C6.21071 5.62753 6 6.13623 6 6.66667Z"
+                        stroke="#111625"
+                        strokeWidth="1.33333"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                     Contact info
                   </ContextMenuItem>
                   <ContextMenuItem
-                    className="rounded-xl"
+                    className="rounded-xl gap-2"
                     onSelect={() => {
                       toast({ title: "Exported" });
                     }}
                   >
-                    <Download className="mr-2 h-4 w-4" />
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M2.66675 11.3333V12.6667C2.66675 13.0203 2.80722 13.3594 3.05727 13.6095C3.30732 13.8595 3.64646 14 4.00008 14H12.0001C12.3537 14 12.6928 13.8595 12.9429 13.6095C13.1929 13.3594 13.3334 13.0203 13.3334 12.6667V11.3333M4.66675 6L8.00008 2.66666M8.00008 2.66666L11.3334 6M8.00008 2.66666V10.6667"
+                        stroke="#111625"
+                        strokeWidth="1.33333"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                     Export chat
                   </ContextMenuItem>
 
-                  <ContextMenuSeparator />
-
-                  <ContextMenuItem className="rounded-xl" onSelect={() => onClearChat(chat.id)}>
+                  <ContextMenuItem className="rounded-xl gap-2" onSelect={() => onClearChat(chat.id)}>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M12 4L4 12M4 4L12 12"
+                        stroke="#111625"
+                        strokeWidth="1.33333"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                     Clear chat
                   </ContextMenuItem>
                   <ContextMenuItem
-                    className="rounded-xl text-destructive focus:text-destructive"
+                    className="rounded-xl gap-2 text-destructive focus:text-destructive"
                     onSelect={() => onDeleteChat(chat.id)}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M2.66675 4.66667H13.3334M6.66675 7.33333V11.3333M9.33341 7.33333V11.3333M3.33341 4.66667L4.00008 12.6667C4.00008 13.0203 4.14056 13.3594 4.39061 13.6095C4.64065 13.8595 4.97979 14 5.33341 14H10.6667C11.0204 14 11.3595 13.8595 11.6096 13.6095C11.8596 13.3594 12.0001 13.0203 12.0001 12.6667L12.6667 4.66667M6.00008 4.66667V2.66667C6.00008 2.48986 6.07032 2.32029 6.19534 2.19526C6.32037 2.07024 6.48994 2 6.66675 2H9.33341C9.51023 2 9.6798 2.07024 9.80482 2.19526C9.92984 2.32029 10.0001 2.48986 10.0001 2.66667V4.66667"
+                        stroke="#DF1C41"
+                        strokeWidth="1.33333"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                     Delete chat
                   </ContextMenuItem>
                 </ContextMenuContent>
