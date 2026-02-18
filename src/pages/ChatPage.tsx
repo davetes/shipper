@@ -8,9 +8,6 @@ import {
   Gift,
   LogOut,
   Pencil,
-  Folder,
-  Home,
-  MessageCircle,
   Phone,
   Search,
   Sparkle,
@@ -461,30 +458,34 @@ const ChatPage = () => {
                 side="right"
                 sideOffset={0}
                 alignOffset={64}
-                className="flex h-[428px] w-[307px] -translate-x-[56px] flex-col gap-1 rounded-[16px] bg-white pb-1 pt-1 shadow-[0px_1px_13.8px_1px_#1212121A]"
+                className="flex h-[428px] w-[307px] -translate-x-[56px] flex-col gap-[4px] rounded-[16px] bg-white pb-[4px] pt-[4px] shadow-[0px_1px_13.8px_1px_#1212121A]"
               >
-                <button
-                  className="flex w-full items-center gap-[10px] rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
-                  onClick={() => {
-                    navigate("/");
-                  }}
-                >
-                  <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
-                    <ChevronLeft className="h-4 w-4" />
+                <div className="flex w-[307px] px-1">
+                  <div className="flex h-[92px] w-[299px] flex-col gap-1 rounded-[12px] p-1">
+                    <button
+                      className="flex w-[287px] items-center gap-[10px] rounded-xl py-2 text-sm hover:bg-muted/50"
+                      
+                    >
+                      <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
+                        <ChevronLeft className="h-4 w-4" />
+                      </div>
+                      Go back to dashboard
+                    </button>
+                    <button
+                      className="flex h-[40px] w-[287px] items-center gap-2 rounded-[8px] bg-[#F8F8F5] p-[6px] text-sm hover:bg-[#F8F8F5]"
+                     
+                    >
+                      <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
+                        <Pencil className="h-4 w-4" />
+                      </div>
+                      Rename file
+                    </button>
                   </div>
-                  Go back to dashboard
-                </button>
-                <button
-                  className="mt-1 flex h-[40px] w-[287px] items-center gap-2 rounded-[8px] bg-[#F8F8F5] p-[6px] text-sm hover:bg-[#F8F8F5]"
-                  onClick={() => toast({ title: "Rename file" })}
-                >
-                  <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
-                    <Pencil className="h-4 w-4" />
-                  </div>
-                  Rename file
-                </button>
+                </div>
 
-                <Separator className="my-2" />
+                <div className="flex w-[307px] px-[10px]">
+                  <Separator className="w-full" />
+                </div>
 
                 <div className="px-1">
                   <div className="text-sm font-semibold text-foreground">testing2</div>
@@ -513,7 +514,7 @@ const ChatPage = () => {
 
                 <button
                   className="mt-2 flex w-full items-center gap-[10px] rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
-                  onClick={() => toast({ title: "Win free credits" })}
+                
                 >
                   <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
                     <Gift className="h-4 w-4" />
@@ -522,7 +523,7 @@ const ChatPage = () => {
                 </button>
                 <button
                   className="mt-1 flex w-full items-center gap-[10px] rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
-                  onClick={() => toast({ title: "Theme Style" })}
+                  
                 >
                   <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -546,7 +547,7 @@ const ChatPage = () => {
                 <Separator className="my-2" />
 
                 <button
-                  className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                  className="flex h-[48px] w-[307px] items-center gap-2 rounded-xl px-1 text-sm hover:bg-muted/50"
                   onClick={handleLogout}
                 >
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -574,7 +575,9 @@ const ChatPage = () => {
               type="button"
               onClick={(e) => e.preventDefault()}
             >
-              <Home className="h-5 w-5" />
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.5 9.375V16.875C17.5 17.0408 17.4342 17.1997 17.3169 17.3169C17.1997 17.4342 17.0408 17.5 16.875 17.5H12.5C12.3342 17.5 12.1753 17.4342 12.0581 17.3169C11.9408 17.1997 11.875 17.0408 11.875 16.875V12.8125C11.875 12.7296 11.8421 12.6501 11.7835 12.5915C11.7249 12.5329 11.6454 12.5 11.5625 12.5H8.4375C8.35462 12.5 8.27513 12.5329 8.21653 12.5915C8.15792 12.6501 8.125 12.7296 8.125 12.8125V16.875C8.125 17.0408 8.05915 17.1997 7.94194 17.3169C7.82473 17.4342 7.66576 17.5 7.5 17.5H3.125C2.95924 17.5 2.80027 17.4342 2.68306 17.3169C2.56585 17.1997 2.5 17.0408 2.5 16.875V9.375C2.50015 9.04354 2.63195 8.72571 2.86641 8.49141L9.11641 2.24141C9.3508 2.00716 9.66862 1.87558 10 1.87558C10.3314 1.87558 10.6492 2.00716 10.8836 2.24141L17.1336 8.49141C17.368 8.72571 17.4998 9.04354 17.5 9.375Z" fill="#151515" />
+              </svg>
             </Button>
             <Button
               variant="ghost"
@@ -583,7 +586,15 @@ const ChatPage = () => {
               type="button"
               onClick={(e) => e.preventDefault()}
             >
-              <MessageCircle className="h-5 w-5" strokeWidth={1.5} />
+              <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M0.9375 14.2884L2.02083 11.0384C1.08454 9.65363 0.745828 8.01374 1.06768 6.42365C1.38954 4.83355 2.35005 3.40146 3.77064 2.39362C5.19123 1.38579 6.97522 0.870811 8.79091 0.944429C10.6066 1.01805 12.3304 1.67526 13.6419 2.79386C14.9534 3.91247 15.7632 5.41635 15.9209 7.02588C16.0785 8.63542 15.5733 10.2411 14.4991 11.5443C13.4248 12.8476 11.8547 13.7597 10.0807 14.1112C8.30661 14.4626 6.44933 14.2295 4.85417 13.4551L0.9375 14.2884Z"
+                  stroke="#596881"
+                  strokeWidth="1.875"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </Button>
             <Button
               variant="ghost"
@@ -601,7 +612,9 @@ const ChatPage = () => {
               type="button"
               onClick={(e) => e.preventDefault()}
             >
-              <Folder className="h-5 w-5" />
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16.875 5.62501H10.2586L8.125 3.49141C8.00935 3.37483 7.87168 3.28241 7.71999 3.21951C7.5683 3.1566 7.40562 3.12448 7.24141 3.12501H3.125C2.79348 3.12501 2.47554 3.2567 2.24112 3.49112C2.0067 3.72554 1.875 4.04349 1.875 4.37501V15.6734C1.87541 15.992 2.00214 16.2974 2.22739 16.5226C2.45263 16.7479 2.75802 16.8746 3.07656 16.875H16.9445C17.2575 16.8746 17.5575 16.7501 17.7788 16.5288C18.0001 16.3075 18.1246 16.0075 18.125 15.6945V6.87501C18.125 6.54349 17.9933 6.22554 17.7589 5.99112C17.5245 5.7567 17.2065 5.62501 16.875 5.62501ZM3.125 4.37501H7.24141L8.49141 5.62501H3.125V4.37501ZM16.875 15.625H3.125V6.87501H16.875V15.625Z" fill="#151515" />
+              </svg>
             </Button>
             <Button
               variant="ghost"
@@ -637,7 +650,15 @@ const ChatPage = () => {
           <div className="flex h-[56px] w-[1340px] items-center gap-6 self-center rounded-[16px] bg-background px-6 py-3">
             <div className="flex h-[32px] w-[1292px] items-center justify-between ">
               <div className="flex items-center gap-2">
-                <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/40" />
+                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M0.9375 14.2884L2.02083 11.0384C1.08454 9.65363 0.745828 8.01374 1.06768 6.42365C1.38954 4.83355 2.35005 3.40146 3.77064 2.39362C5.19123 1.38579 6.97522 0.870811 8.79091 0.944429C10.6066 1.01805 12.3304 1.67526 13.6419 2.79386C14.9534 3.91247 15.7632 5.41635 15.9209 7.02588C16.0785 8.63542 15.5733 10.2411 14.4991 11.5443C13.4248 12.8476 11.8547 13.7597 10.0807 14.1112C8.30661 14.4626 6.44933 14.2295 4.85417 13.4551L0.9375 14.2884Z"
+                    stroke="#596881"
+                    strokeWidth="1.875"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
                 <span className="text-sm font-medium text-foreground">Message</span>
               </div>
 
@@ -740,15 +761,18 @@ const ChatPage = () => {
         </div>
 
         <Sheet open={contactInfoOpen} onOpenChange={setContactInfoOpen}>
-          <SheetContent side="right" className="p-0 sm:max-w-md">
-            <div className="flex items-center justify-between px-6 py-4">
+          <SheetContent
+            side="right"
+            className="right-[calc((100vw-1440px)/2+16px)] top-4 h-[1000px] w-[450px] gap-6 rounded-[24px] bg-white p-6 shadow-[0px_4px_32px_0px_#0000001F]"
+          >
+            <div className="flex items-center justify-between">
               <SheetTitle className="text-base font-semibold">Contact Info</SheetTitle>
               <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setContactInfoOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
 
-            <div className="px-6 py-5">
+            <div>
               <div className="flex flex-col items-center text-center">
                 <Avatar className="h-20 w-20">
                   <AvatarImage src={contactUser?.avatar} alt={contactUser?.name ?? ""} />

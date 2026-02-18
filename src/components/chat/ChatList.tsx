@@ -4,7 +4,6 @@ import {
   Download,
   Filter,
   Info,
-  PencilLine,
   Search,
   Trash2,
   VolumeX,
@@ -76,14 +75,22 @@ const ChatList = ({
             <PopoverTrigger asChild>
               <Button
                 size="sm"
-                className="h-8 w-[134px] gap-[6px] rounded-[8px] border border-[#1E9A80] bg-[linear-gradient(180deg,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#1E9A80,#1E9A80)] p-2 text-white shadow-[inset_0px_1px_0px_1px_#FFFFFF1F] hover:opacity-95"
+                className="relative -left-3 h-8 w-[134px] gap-[6px] rounded-[8px] border border-[#1E9A80] bg-[linear-gradient(180deg,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#1E9A80,#1E9A80)] p-2 text-white shadow-[inset_0px_1px_0px_1px_#FFFFFF1F] hover:opacity-95"
               >
-                <PencilLine className="h-4 w-4" />
+                <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M7.7749 2.02127L10.7749 5.02127M9.6499 10.6463H12.6499M11.1499 9.14627V12.1463M3.6499 12.1463L11.5249 4.27131C11.7219 4.07433 11.8781 3.84048 11.9847 3.58311C12.0914 3.32574 12.1462 3.04989 12.1462 2.77131C12.1462 2.49274 12.0914 2.21689 11.9847 1.95952C11.8781 1.70215 11.7219 1.4683 11.5249 1.27131C11.3279 1.07433 11.0941 0.918076 10.8367 0.81147C10.5793 0.704864 10.3035 0.649994 10.0249 0.649994C9.74633 0.649994 9.47048 0.704864 9.21311 0.81147C8.95574 0.918076 8.72188 1.07433 8.5249 1.27131L0.649902 9.14631V12.1463H3.6499Z"
+                    stroke="white"
+                    strokeWidth="1.3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
                 New Message
               </Button>
             </PopoverTrigger>
             <PopoverContent
-              align="start"
+              align="end"
               side="bottom"
               className="flex h-[440px] w-[273px] flex-col rounded-[16px] border border-[#E8E5DF] bg-white p-3 shadow-[0_0_24px_0_#0000000F]"
             >
@@ -121,24 +128,28 @@ const ChatList = ({
           </Popover>
         </div>
 
-        <div className="mt-4 flex items-center gap-2">
-          <div className="relative flex-1">
+        <div className="relative -left-3 mt-4 flex h-10 w-[352px] items-center gap-4 ">
+          <div className="relative h-10 w-[296px] ">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search in message"
-              className="h-10 rounded-xl bg-muted/30 pl-9"
+              className="h-10 w-full rounded-xl bg-muted/30 pl-9"
             />
           </div>
-          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl">
-            <Filter className="h-4 w-4 text-muted-foreground" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-10 w-10 rounded-[10px] border border-[#E8E5DF] bg-white p-[10px] text-muted-foreground hover:bg-white"
+          >
+            <Filter className="h-5 w-5" />
           </Button>
         </div>
       </div>
 
       <ScrollArea className="flex-1 mt-4">
-        <div className="px-2 pb-3">
+        <div className="px-1 pb-3">
           {filtered.map((chat) => {
             const user = getUserById(chat.userId);
             if (!user) return null;
@@ -150,13 +161,13 @@ const ChatList = ({
                   <button
                     onClick={() => onChatSelect(chat.id)}
                     className={cn(
-                      "group w-full flex items-center gap-3 rounded-2xl px-3 py-3 hover:bg-muted/40 transition-colors text-left",
+                      "group w-full flex items-center gap-3 rounded-2xl px-0 py-3 hover:bg-muted/40 transition-colors text-left",
                       activeChatId === chat.id && "bg-muted/60"
                     )}
                   >
                     {isUnread && (
                       <div className="shrink-0">
-                        <div className="flex flex-col items-center justify-center gap-1 rounded-xl bg-emerald-600 px-3 py-2 text-white">
+                        <div className="flex h-[64px] w-[64px] flex-col items-center justify-center gap-2 rounded-[12px] bg-[#1E9A80] p-3 text-white">
                           <span className="h-4 w-4 rounded-full border-2 border-white/70" />
                           <span className="text-[11px] font-medium leading-none">Unread</span>
                         </div>
