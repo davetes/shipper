@@ -81,3 +81,33 @@ chatsRouter.get("/:chatId/messages", requireAuth, async (req: AuthedRequest, res
 
   return res.json({ messages });
 });
+
+chatsRouter.delete("/:chatId/messages", requireAuth, async (req: AuthedRequest, res) => {
+  const chatId = req.params.chatId;
+  const userId = req.user!.id;
+
+  const isMember = await prisma.chatMember.findFirst({ where: { chatId, userId } });
+  if (!isMember) return res.status(403).json({ error: "Forbidden" });
+
+  await prisma.message.deleteMany({ where: { chatId } });
+  await prisma.chat.update({ where: { id: chatId }, data: { updatedAt: new Date() } });
+
+  return res.json({ ok: true });
+});
+
+chatsRouter.delete("/:chatId", requireAuth, async (req: AuthedRequest, res) => {
+  const chatId = req.params.chatId;
+  const userId = req.user!.id;
+
+  const isMember = await prisma.chatMember.findFirst({ where: { chatId, userId } });
+  if (!isMember) return res.status(403).json({ error: "Forbidden" });
+
+  await prisma.chatMember.delete({ where: { chatId_userId: { chatId, userId } } });
+
+  const remaining = await prisma.chatMember.count({ where: { chatId } });
+  if (remaining === 0) {
+    await prisma.chat.delete({ where: { id: chatId } });
+  }
+
+  return res.json({ ok: true });
+});

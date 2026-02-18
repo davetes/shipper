@@ -380,13 +380,26 @@ const ChatPage = () => {
     }
   };
 
-  const handleDeleteChat = (chatId: string) => {
+  const handleDeleteChat = async (chatId: string) => {
+    const prevChats = chatData;
+    const prevActive = activeChatId;
+
     setChatData((prev) => prev.filter((c) => c.id !== chatId));
     setActiveChatId((prev) => (prev === chatId ? null : prev));
-    toast({ title: "Chat deleted" });
+
+    try {
+      await apiFetch<{ ok: true }>(`/api/chats/${chatId}`, { method: "DELETE" });
+      toast({ title: "Chat deleted" });
+    } catch {
+      setChatData(prevChats);
+      setActiveChatId(prevActive);
+      toast({ title: "Failed to delete chat" });
+    }
   };
 
-  const handleClearChat = (chatId: string) => {
+  const handleClearChat = async (chatId: string) => {
+    const prevChats = chatData;
+
     setChatData((prev) =>
       prev.map((c) =>
         c.id === chatId
@@ -394,13 +407,20 @@ const ChatPage = () => {
               ...c,
               messages: [],
               lastMessage: "",
-              lastMessageTime: "Now",
+              lastMessageTime: "",
               unreadCount: 0,
             }
           : c
       )
     );
-    toast({ title: "Chat cleared" });
+
+    try {
+      await apiFetch<{ ok: true }>(`/api/chats/${chatId}/messages`, { method: "DELETE" });
+      toast({ title: "Chat cleared" });
+    } catch {
+      setChatData(prevChats);
+      toast({ title: "Failed to clear chat" });
+    }
   };
 
   const handleToggleUnread = (chatId: string) => {
