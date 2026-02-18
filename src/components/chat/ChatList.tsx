@@ -70,21 +70,26 @@ const ChatList = ({
   return (
     <div className="flex h-full flex-col">
       <div className="px-5 pt-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold text-foreground">All Message</h2>
+        <div className="flex h-8 w-[352px] items-center justify-between">
+          <h2 className="h-[30px] w-[118px] text-base font-semibold text-[#111625]">All Message</h2>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-              <Button size="sm" className="h-8 rounded-full gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button
+                size="sm"
+                className="h-8 w-[134px] gap-[6px] rounded-[8px] border border-[#1E9A80] bg-[linear-gradient(180deg,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0)_100%),linear-gradient(0deg,#1E9A80,#1E9A80)] p-2 text-white shadow-[inset_0px_1px_0px_1px_#FFFFFF1F] hover:opacity-95"
+              >
                 <PencilLine className="h-4 w-4" />
                 New Message
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" side="bottom" className="w-72 p-0 rounded-2xl">
-              <div className="px-4 pt-4 pb-2">
-                <div className="text-sm font-semibold text-foreground">New Message</div>
-              </div>
-              <Command className="rounded-2xl">
-                <CommandInput placeholder="Search name or email" />
+            <PopoverContent
+              align="start"
+              side="bottom"
+              className="flex h-[440px] w-[273px] flex-col rounded-[16px] border border-[#E8E5DF] bg-white p-3 shadow-[0_0_24px_0_#0000000F]"
+            >
+              <div className="flex h-[24px] w-[249px] items-center gap-[10px] text-sm font-semibold text-foreground">New Message</div>
+              <Command className="flex-1 rounded-2xl [&_[cmdk-input-wrapper]]:h-[32px] [&_[cmdk-input-wrapper]]:w-[249px] [&_[cmdk-input-wrapper]]:gap-2 [&_[cmdk-input-wrapper]]:rounded-[10px] [&_[cmdk-input-wrapper]]:border [&_[cmdk-input-wrapper]]:border-[#F3F3EE] [&_[cmdk-input-wrapper]]:px-0 [&_[cmdk-input-wrapper]]:py-0 [&_[cmdk-input-wrapper]]:pl-[10px] [&_[cmdk-input-wrapper]]:pr-1 [&_[cmdk-input-wrapper]]:mb-3 [&_[cmdk-input-wrapper]]:border-b [&_[cmdk-input-wrapper]]:border-b-0 [&_[cmdk-input-wrapper]_svg]:mr-0">
+                <CommandInput placeholder="Search name or email" className="h-[16px] py-0 text-xs leading-4" />
                 <CommandList className="max-h-80">
                   <CommandEmpty>No results found.</CommandEmpty>
                   {users
@@ -97,7 +102,7 @@ const ChatList = ({
                           onNewMessage(u.id);
                           setOpen(false);
                         }}
-                        className="rounded-xl px-3 py-2.5"
+                        className="h-[44px] w-[249px] cursor-pointer gap-[10px] rounded-[8px] bg-white px-2 py-[6px] hover:bg-[#F3F3EE] data-[selected=true]:bg-[#F3F3EE]"
                       >
                         <div className="flex items-center gap-3">
                           <Avatar className="h-8 w-8">

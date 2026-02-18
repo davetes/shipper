@@ -10,10 +10,11 @@ import {
   Pencil,
   Folder,
   Home,
-  Image,
   MessageCircle,
   Phone,
   Search,
+  Sparkle,
+  Settings,
   Sparkles,
   Video,
   X,
@@ -441,41 +442,45 @@ const ChatPage = () => {
   const activeGroup = groupData.find((g) => g.id === activeGroupId);
 
   return (
-    <div className="min-h-screen w-full bg-muted/30 p-4">
-      <div className="mx-auto flex h-[1024px] w-[1440px] max-w-full gap-4 rounded-[24px] overflow-hidden">
-        <div className="flex h-full w-[76px] shrink-0 flex-col items-center justify-between rounded-2xl bg-muted/30 px-4 py-6 shadow-sm">
+    <div className="min-h-screen w-full bg-[#F3F3EE] p-4">
+      <div className="mx-auto flex h-[1024px] w-[1440px] max-w-full gap-4 rounded-[24px] bg-[#F3F3EE] overflow-hidden">
+        <div className="flex h-full w-[76px] shrink-0 flex-col items-center justify-between rounded-2xl bg-muted/30 px-4 pb-6 pt-0 shadow-sm">
           <div className="flex h-[328px] w-[44px] flex-col items-center gap-8">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="default"
                   size="icon"
-                  className="h-[44px] w-[44px] rounded-full bg-transparent p-[11px] text-foreground hover:bg-muted/50 data-[state=open]:bg-muted/50"
+                  className="h-[66px] w-[66px] rounded-full bg-transparent p-[11px] text-foreground hover:bg-muted/50 data-[state=open]:bg-muted/50"
                 >
-                  <img src="/icon.png" alt="New" className="h-[22px] w-[22px]" />
+                  <img src="/icon.png" alt="New" className="h-[44px] w-[44px] rounded-full" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent
                 align="start"
                 side="right"
                 sideOffset={0}
-                alignOffset={56}
-                className="flex h-[428px] w-[307px] -translate-x-16 flex-col gap-1 rounded-[16px] py-1"
+                alignOffset={64}
+                className="flex h-[428px] w-[307px] -translate-x-[56px] flex-col gap-1 rounded-[16px] bg-white pb-1 pt-1 shadow-[0px_1px_13.8px_1px_#1212121A]"
               >
                 <button
-                  className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                  className="flex w-full items-center gap-[10px] rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
                   onClick={() => {
                     navigate("/");
                   }}
                 >
-                  <ChevronLeft className="h-4 w-4" />
+                  <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
+                    <ChevronLeft className="h-4 w-4" />
+                  </div>
                   Go back to dashboard
                 </button>
                 <button
-                  className="mt-1 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                  className="mt-1 flex h-[40px] w-[287px] items-center gap-2 rounded-[8px] bg-[#F8F8F5] p-[6px] text-sm hover:bg-[#F8F8F5]"
                   onClick={() => toast({ title: "Rename file" })}
                 >
-                  <Pencil className="h-4 w-4" />
+                  <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
+                    <Pencil className="h-4 w-4" />
+                  </div>
                   Rename file
                 </button>
 
@@ -486,7 +491,7 @@ const ChatPage = () => {
                   <div className="text-xs text-muted-foreground">testing2@gmail.com</div>
                 </div>
 
-                <div className="mt-3 rounded-xl border bg-background p-3">
+                <div className="mt-3 flex h-[100px] w-[287px] flex-col gap-2 rounded-[8px] bg-[#F8F8F5] p-2">
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-[11px] text-muted-foreground">Credits</div>
@@ -507,17 +512,34 @@ const ChatPage = () => {
                 </div>
 
                 <button
-                  className="mt-2 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                  className="mt-2 flex w-full items-center gap-[10px] rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
                   onClick={() => toast({ title: "Win free credits" })}
                 >
-                  <Gift className="h-4 w-4" />
+                  <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
+                    <Gift className="h-4 w-4" />
+                  </div>
                   Win free credits
                 </button>
                 <button
-                  className="mt-1 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
+                  className="mt-1 flex w-full items-center gap-[10px] rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
                   onClick={() => toast({ title: "Theme Style" })}
                 >
-                  <Sparkles className="h-4 w-4" />
+                  <div className="flex h-[28px] w-[28px] items-center justify-center rounded-[6px] bg-[#F3F3EE] p-[6px]">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <g clipPath="url(#clip0_0_2044)">
+                        <path
+                          d="M8.00016 1.33334V2M8.00016 14V14.6667M12.7142 3.28596L12.2428 3.75737M3.75753 12.2426L3.28612 12.714M14.6668 8H14.0002M2.00016 8H1.3335M12.7142 12.714L12.2428 12.2426M3.75753 3.75737L3.28612 3.28596M12.0002 8C12.0002 10.2091 10.2093 12 8.00016 12C5.79102 12 4.00016 10.2091 4.00016 8C4.00016 5.79086 5.79102 4 8.00016 4C10.2093 4 12.0002 5.79086 12.0002 8Z"
+                          stroke="#28303F"
+                          strokeLinecap="round"
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_0_2044">
+                          <rect width="16" height="16" fill="white" />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                  </div>
                   Theme Style
                 </button>
 
@@ -527,7 +549,19 @@ const ChatPage = () => {
                   className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-muted/50"
                   onClick={handleLogout}
                 >
-                  <LogOut className="h-4 w-4" />
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M13.3335 9.33333L14.1954 8.47141C14.4558 8.21106 14.4558 7.78895 14.1954 7.5286L13.3335 6.66667"
+                      stroke="#28303F"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M14.0002 8H8.66683M4.00016 13.3333C2.5274 13.3333 1.3335 12.1394 1.3335 10.6667V5.33333C1.3335 3.86058 2.5274 2.66667 4.00016 2.66667M4.00016 13.3333C5.47292 13.3333 6.66683 12.1394 6.66683 10.6667V5.33333C6.66683 3.86058 5.47292 2.66667 4.00016 2.66667M4.00016 13.3333H9.3335C10.8063 13.3333 12.0002 12.1394 12.0002 10.6667M4.00016 2.66667H9.3335C10.8063 2.66667 12.0002 3.86058 12.0002 5.33333"
+                      stroke="#28303F"
+                      strokeLinecap="round"
+                    />
+                  </svg>
                   Log out
                 </button>
               </PopoverContent>
@@ -537,27 +571,26 @@ const ChatPage = () => {
               variant="ghost"
               size="icon"
               className="h-11 w-11 rounded-2xl text-foreground"
-              onClick={() => setSection("stories")}
+              type="button"
+              onClick={(e) => e.preventDefault()}
             >
               <Home className="h-5 w-5" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className={
-                section === "chats"
-                  ? "h-11 w-11 rounded-2xl border border-emerald-600 bg-emerald-50 text-foreground hover:bg-emerald-50"
-                  : "h-11 w-11 rounded-2xl text-foreground"
-              }
-              onClick={() => setSection("chats")}
+              className="h-[44px] w-[44px] min-w-[44px] max-w-[44px] gap-2 rounded-[8px] border border-[#1E9A80] bg-[#F0FDF4] px-3 py-2 text-foreground hover:bg-[#F0FDF4]"
+              type="button"
+              onClick={(e) => e.preventDefault()}
             >
-              <MessageCircle className="h-5 w-5" />
+              <MessageCircle className="h-5 w-5" strokeWidth={1.5} />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               className="h-11 w-11 rounded-2xl text-foreground"
-              onClick={() => setSection("contacts")}
+              type="button"
+              onClick={(e) => e.preventDefault()}
             >
               <Compass className="h-5 w-5" />
             </Button>
@@ -565,7 +598,8 @@ const ChatPage = () => {
               variant="ghost"
               size="icon"
               className="h-11 w-11 rounded-2xl text-foreground"
-              onClick={() => setSection("groups")}
+              type="button"
+              onClick={(e) => e.preventDefault()}
             >
               <Folder className="h-5 w-5" />
             </Button>
@@ -573,13 +607,25 @@ const ChatPage = () => {
               variant="ghost"
               size="icon"
               className="h-11 w-11 rounded-2xl text-foreground"
-              onClick={() => setSection("stories")}
+              type="button"
+              onClick={(e) => e.preventDefault()}
             >
-              <Image className="h-5 w-5" />
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16.25 2.5H6.25C5.91848 2.5 5.60054 2.6317 5.36612 2.86612C5.1317 3.10054 5 3.41848 5 3.75V5H3.75C3.41848 5 3.10054 5.1317 2.86612 5.36612C2.6317 5.60054 2.5 5.91848 2.5 6.25V16.25C2.5 16.5815 2.6317 16.8995 2.86612 17.1339C3.10054 17.3683 3.41848 17.5 3.75 17.5H13.75C14.0815 17.5 14.3995 17.3683 14.6339 17.1339C14.8683 16.8995 15 16.5815 15 16.25V15H16.25C16.5815 15 16.8995 14.8683 17.1339 14.6339C17.3683 14.3995 17.5 14.0815 17.5 13.75V3.75C17.5 3.41848 17.3683 3.10054 17.1339 2.86612C16.8995 2.6317 16.5815 2.5 16.25 2.5ZM6.25 3.75H16.25V9.17031L14.9453 7.86563C14.7109 7.63138 14.3931 7.4998 14.0617 7.4998C13.7303 7.4998 13.4125 7.63138 13.1781 7.86563L7.29453 13.75H6.25V3.75ZM13.75 16.25H3.75V6.25H5V13.75C5 14.0815 5.1317 14.3995 5.36612 14.6339C5.60054 14.8683 5.91848 15 6.25 15H13.75V16.25ZM16.25 13.75H9.0625L14.0625 8.75L16.25 10.9375V13.75ZM9.375 8.75C9.74584 8.75 10.1084 8.64003 10.4167 8.43401C10.725 8.22798 10.9654 7.93514 11.1073 7.59253C11.2492 7.24992 11.2863 6.87292 11.214 6.50921C11.1416 6.14549 10.963 5.8114 10.7008 5.54917C10.4386 5.28695 10.1045 5.10837 9.74079 5.03603C9.37708 4.96368 9.00008 5.00081 8.65747 5.14273C8.31486 5.28464 8.02202 5.52496 7.81599 5.83331C7.60997 6.14165 7.5 6.50416 7.5 6.875C7.5 7.37228 7.69754 7.84919 8.04917 8.20083C8.40081 8.55246 8.87772 8.75 9.375 8.75ZM9.375 6.25C9.49861 6.25 9.61945 6.28666 9.72223 6.35533C9.82501 6.42401 9.90512 6.52162 9.95242 6.63582C9.99973 6.75003 10.0121 6.87569 9.98799 6.99693C9.96388 7.11817 9.90435 7.22953 9.81694 7.31694C9.72953 7.40435 9.61817 7.46388 9.49693 7.48799C9.37569 7.51211 9.25003 7.49973 9.13582 7.45242C9.02162 7.40512 8.92401 7.32501 8.85533 7.22223C8.78666 7.11945 8.75 6.99861 8.75 6.875C8.75 6.70924 8.81585 6.55027 8.93306 6.43306C9.05027 6.31585 9.20924 6.25 9.375 6.25Z" fill="#151515" />
+              </svg>
             </Button>
           </div>
 
-          <div className="mt-auto flex flex-col items-center gap-3">
+          <div className="mt-auto flex h-[112px] w-[44px] flex-col items-center gap-6">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-11 w-11 rounded-2xl text-foreground"
+              type="button"
+              onClick={(e) => e.preventDefault()}
+            >
+              <Sparkle className="h-5 w-5" strokeWidth={1.5} />
+            </Button>
             <Avatar className="h-10 w-10">
               <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
               <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
@@ -595,7 +641,7 @@ const ChatPage = () => {
                 <span className="text-sm font-medium text-foreground">Message</span>
               </div>
 
-              <div className="flex flex-1 items-center justify-center px-4">
+              <div className="flex h-[32px] w-[476px] items-center justify-between gap-4">
                 <div className="flex h-[32px] w-[300px] items-center gap-2 rounded-[10px] border border-[#E8E5DF] bg-background py-[10px] pl-[10px] pr-1">
                   <Search className="h-4 w-4 text-muted-foreground" />
                   <Input
@@ -606,32 +652,44 @@ const ChatPage = () => {
                     ⌘+K
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="text-muted-foreground">
-                  <Bell className="h-4 w-4" />
-                </Button>
-                <div className="h-6 w-px bg-border" />
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
-                    <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
-                  </Avatar>
+                <div className="flex items-center gap-4">
                   <Button
                     variant="ghost"
-                    className="h-9 gap-1 px-2 text-muted-foreground"
-                    onClick={() => setSection("settings")}
+                    size="icon"
+                    className="h-[32px] w-[32px] rounded-[8px] border border-[#E8E5DF] bg-background text-muted-foreground hover:bg-muted/30"
                   >
-                    <ChevronDown className="h-4 w-4" />
+                    <Bell className="h-4 w-4" />
                   </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-[32px] w-[32px] rounded-[8px] border border-[#E8E5DF] bg-background text-muted-foreground hover:bg-muted/30"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                  <div className="h-[20px] w-0 border-l border-[#E8E5DF]" />
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8 bg-[#F7F9FB]">
+                      <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+                      <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
+                    </Avatar>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="h-9 gap-1 px-2 text-muted-foreground"
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      <ChevronDown className="h-[16px] w-[16px]" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="flex h-full w-full gap-4 overflow-hidden">
-            <div className="flex h-full w-[360px] shrink-0 flex-col overflow-hidden rounded-2xl bg-background shadow-sm">
+            <div className="flex h-[932px] w-[400px] shrink-0 flex-col gap-6 overflow-hidden rounded-[24px] bg-background p-6">
               {section === "chats" ? (
                 <ChatList
                   activeChatId={activeChatId}
@@ -657,7 +715,7 @@ const ChatPage = () => {
               )}
             </div>
 
-            <div className="flex h-full flex-1 flex-col overflow-hidden rounded-2xl bg-background shadow-sm">
+            <div className="flex h-[932px] w-[928px] flex-col overflow-hidden rounded-[24px] bg-white p-3">
               {section === "chats" ? (
                 activeChat ? (
                   <ConversationView chat={activeChat} onSendMessage={handleSendMessage} getUserById={getUserById} currentUserId={currentUser.id} />
